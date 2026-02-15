@@ -1,0 +1,8 @@
+backend/
+frontend/
+sql/
+.git/
+.gitignore
+README.md
+*.sql
+.env
