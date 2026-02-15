@@ -5,86 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up - Department Monitoring System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
     <link rel="stylesheet" href="css/styles.css" />
     <style>
       .gradient-bg {
-        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       }
-      .form-container {
-        max-width: 480px;
+      .success-animation {
+        animation: slideIn 0.3s ease-out;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
     </style>
   </head>
   <body class="gradient-bg min-h-screen flex justify-center items-center p-4">
-    <div
-      class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
-    >
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
       <!-- Header -->
-      <div class="gradient-bg px-8 py-6 text-center">
-        <div
-          class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3"
-        >
-          <i class="fas fa-user-plus text-white text-2xl"></i>
+      <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6 text-center">
+        <div class="bg-white/20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+          </svg>
         </div>
-        <h2 class="text-2xl font-bold text-white">Create Account</h2>
-        <p class="text-white/80 text-sm mt-1">
-          Join the Department Monitoring System
-        </p>
+        <h2 class="text-3xl font-bold text-white mb-2">Create Account</h2>
+        <p class="text-white/90">Join the Department Monitoring System</p>
       </div>
 
       <div class="p-8">
-        <a
-          href="index.html"
-          class="inline-flex items-center text-indigo-600 hover:text-indigo-800 text-sm mb-6 transition"
-        >
-          <i class="fas fa-arrow-left mr-2"></i> Back to Home
+        <a href="index.html" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 text-sm font-medium mb-6 transition">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Back to Home
         </a>
 
-        <div
-          id="message"
-          class="hidden border px-4 py-3 rounded-lg mb-4 flex items-center"
-        >
-          <i class="fas fa-info-circle mr-2"></i>
-          <span id="messageText"></span>
-        </div>
+        <!-- Success/Error Message -->
+        <div id="message" class="hidden mb-4"></div>
 
-        <form id="signupForm" class="space-y-4">
+        <form id="signupForm" class="space-y-5">
+          <!-- Full Name -->
           <div>
-            <label class="block text-gray-700 text-sm font-semibold mb-2">
-              <i class="fas fa-user mr-1 text-indigo-500"></i> Full Name
-            </label>
+            <label class="block text-gray-700 text-sm font-semibold mb-2">Full Name</label>
             <input
               type="text"
               name="name"
               id="name"
               required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition"
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition"
               placeholder="Enter your full name"
             />
           </div>
 
+          <!-- Email -->
           <div>
-            <label class="block text-gray-700 text-sm font-semibold mb-2">
-              <i class="fas fa-envelope mr-1 text-indigo-500"></i> Email Address
-            </label>
+            <label class="block text-gray-700 text-sm font-semibold mb-2">Email Address</label>
             <input
               type="email"
               name="email"
               id="email"
               required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition"
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition"
               placeholder="Enter your email"
             />
           </div>
 
+          <!-- Password -->
           <div>
-            <label class="block text-gray-700 text-sm font-semibold mb-2">
-              <i class="fas fa-lock mr-1 text-indigo-500"></i> Password
-            </label>
+            <label class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
             <div class="relative">
               <input
                 type="password"
@@ -92,56 +86,53 @@
                 id="password"
                 required
                 minlength="6"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition pr-12"
-                placeholder="Min 6 characters"
+                class="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition"
+                placeholder="Minimum 6 characters"
               />
               <button
                 type="button"
                 id="togglePassword"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
               >
-                <i class="fas fa-eye"></i>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
               </button>
             </div>
           </div>
 
+          <!-- Role -->
           <div>
-            <label class="block text-gray-700 text-sm font-semibold mb-2">
-              <i class="fas fa-user-tag mr-1 text-indigo-500"></i> Role
-            </label>
-            <div class="relative">
-              <select
-                name="role"
-                id="role"
-                required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition appearance-none bg-white cursor-pointer"
-              >
-                <option value="">Select your role</option>
-                <option value="faculty">Faculty Member</option>
-                <option value="hod">Head of Department (HOD)</option>
-              </select>
-              <i
-                class="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-              ></i>
-            </div>
+            <label class="block text-gray-700 text-sm font-semibold mb-2">Select Role</label>
+            <select
+              name="role"
+              id="role"
+              required
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition appearance-none bg-white cursor-pointer"
+            >
+              <option value="">-- Choose your role --</option>
+              <option value="faculty">Faculty Member</option>
+              <option value="hod">Head of Department (HOD)</option>
+            </select>
           </div>
 
+          <!-- Submit Button -->
           <button
             type="submit"
-            class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg hover:from-indigo-600 hover:to-purple-700 transition duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            id="submitBtn"
+            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
-            <i class="fas fa-user-plus mr-2"></i> Create Account
+            Create Account
           </button>
         </form>
 
+        <!-- Sign in Link -->
         <div class="mt-6 text-center">
-          <p class="text-gray-600 text-sm">
+          <p class="text-gray-600">
             Already have an account?
-            <a
-              href="login.html"
-              class="text-indigo-600 hover:text-indigo-800 font-semibold transition"
-            >
-              Sign in
+            <a href="login.html" class="text-indigo-600 hover:text-indigo-800 font-semibold transition">
+              Sign In
             </a>
           </p>
         </div>
@@ -156,82 +147,102 @@
       }
 
       // Toggle password visibility
-      document
-        .getElementById("togglePassword")
-        .addEventListener("click", function () {
-          const passwordInput = document.getElementById("password");
-          const icon = this.querySelector("i");
-          if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-            icon.classList.remove("fa-eye");
-            icon.classList.add("fa-eye-slash");
+      const togglePassword = document.getElementById("togglePassword");
+      const passwordInput = document.getElementById("password");
+      
+      togglePassword.addEventListener("click", function () {
+        const type = passwordInput.type === "password" ? "text" : "password";
+        passwordInput.type = type;
+        
+        // Change icon
+        if (type === "password") {
+          this.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>';
+        } else {
+          this.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>';
+        }
+      });
+
+      // Show message function
+      function showMessage(text, type) {
+        const messageDiv = document.getElementById("message");
+        messageDiv.classList.remove("hidden");
+        messageDiv.classList.add("success-animation");
+        
+        if (type === "success") {
+          messageDiv.className = "bg-green-50 border-2 border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center success-animation";
+          messageDiv.innerHTML = `
+            <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span class="font-medium">${text}</span>
+          `;
+        } else {
+          messageDiv.className = "bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center success-animation";
+          messageDiv.innerHTML = `
+            <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span class="font-medium">${text}</span>
+          `;
+        }
+      }
+
+      // Form submission
+      document.getElementById("signupForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById("submitBtn");
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        const role = document.getElementById("role").value;
+
+        // Validation
+        if (!name || !email || !password || !role) {
+          showMessage("Please fill in all fields", "error");
+          return;
+        }
+
+        if (password.length < 6) {
+          showMessage("Password must be at least 6 characters", "error");
+          return;
+        }
+
+        // Disable button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+
+        try {
+          const response = await fetch("api/register.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password, role }),
+          });
+          
+          const result = await response.json();
+
+          if (result.success) {
+            showMessage("✓ Account created successfully! Redirecting to login...", "success");
+            
+            // Reset form
+            document.getElementById("signupForm").reset();
+            
+            // Redirect after 1.5 seconds
+            setTimeout(() => {
+              window.location.href = "login.html";
+            }, 1500);
           } else {
-            passwordInput.type = "password";
-            icon.classList.remove("fa-eye-slash");
-            icon.classList.add("fa-eye");
+            showMessage(result.message || "Registration failed. Please try again.", "error");
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "Create Account";
           }
-        });
-
-      document
-        .getElementById("signupForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-
-          const name = document.getElementById("name").value;
-          const email = document.getElementById("email").value;
-          const password = document.getElementById("password").value;
-          const role = document.getElementById("role").value;
-          const messageDiv = document.getElementById("message");
-          const messageText = document.getElementById("messageText");
-
-          if (password.length < 6) {
-            messageDiv.className =
-              "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded-lg mb-4 flex items-center";
-            messageDiv.querySelector("i").className =
-              "fas fa-exclamation-circle mr-2";
-            messageText.textContent = "Password must be at least 6 characters!";
-            messageDiv.classList.remove("hidden");
-            return;
-          }
-
-          try {
-            const response = await fetch("api/register.php", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ name, email, password, role }),
-            });
-            const result = await response.json();
-
-            if (result.success) {
-              messageDiv.className =
-                "bg-green-100 text-green-700 border border-green-400 px-4 py-3 rounded-lg mb-4 flex items-center";
-              messageDiv.querySelector("i").className =
-                "fas fa-check-circle mr-2";
-              messageText.textContent =
-                result.message + " Redirecting to login...";
-              messageDiv.classList.remove("hidden");
-
-              setTimeout(() => {
-                window.location.href = "login.html";
-              }, 1500);
-            } else {
-              messageDiv.className =
-                "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded-lg mb-4 flex items-center";
-              messageDiv.querySelector("i").className =
-                "fas fa-exclamation-circle mr-2";
-              messageText.textContent = result.message;
-              messageDiv.classList.remove("hidden");
-            }
-          } catch (error) {
-            console.error("Registration error:", error);
-            messageDiv.className =
-              "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded-lg mb-4 flex items-center";
-            messageDiv.querySelector("i").className =
-              "fas fa-exclamation-circle mr-2";
-            messageText.textContent = "Registration failed. Please try again.";
-            messageDiv.classList.remove("hidden");
-          }
-        });
+        } catch (error) {
+          console.error("Registration error:", error);
+          showMessage("Network error. Please check your connection and try again.", "error");
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = "Create Account";
+        }
+      });
     </script>
   </body>
 </html>
