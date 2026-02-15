@@ -5,9 +5,16 @@
   "functions": {
     "backend/*.php": {
       "runtime": "vercel-php@0.7.1"
+    },
+    "backend/NBA/*.php": {
+      "runtime": "vercel-php@0.7.1"
     }
   },
   "routes": [
+    {
+      "src": "/backend/NBA/(.*)\\.php",
+      "dest": "/backend/NBA/$1.php"
+    },
     {
       "src": "/backend/(.*)\\.php",
       "dest": "/backend/$1.php"
