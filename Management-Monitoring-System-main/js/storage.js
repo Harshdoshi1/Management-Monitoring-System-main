@@ -263,7 +263,7 @@ const Storage = {
   // ==================== NBA DATA ====================
 
   /**
-   * Get NBA data for specific criteria
+   * Get NBA data for specific criteria (with Supabase sync)
    */
   getNBAData(criteria) {
     const allData = JSON.parse(
@@ -273,7 +273,36 @@ const Storage = {
   },
 
   /**
-   * Save NBA data for specific criteria
+   * Get NBA data from Supabase backend
+   */
+  async getNBADataFromSupabase(criteria) {
+    try {
+      const response = await fetch(`backend/nba_save.php?criteria=${encodeURIComponent(criteria)}`);
+      const result = await response.json();
+      if (result.success && result.data) {
+        // Parse the data field and update local storage
+        const parsedData = result.data.map(item => ({
+          ...JSON.parse(item.data || '{}'),
+          id: item.id,
+          createdAt: item.created_at
+        }));
+        
+        // Update local storage cache
+        const allData = JSON.parse(localStorage.getItem(this.KEYS.NBA_DATA) || "{}");
+        allData[criteria] = parsedData;
+        localStorage.setItem(this.KEYS.NBA_DATA, JSON.stringify(allData));
+        
+        return parsedData;
+      }
+      return this.getNBAData(criteria);
+    } catch (error) {
+      console.error('Failed to fetch from Supabase:', error);
+      return this.getNBAData(criteria);
+    }
+  },
+
+  /**
+   * Save NBA data for specific criteria (with Supabase sync)
    */
   saveNBAData(criteria, data) {
     const allData = JSON.parse(
@@ -281,8 +310,8 @@ const Storage = {
     );
 
     // Check if editing existing or new entry
-    if (data.id) {
-      // Update existing
+    if (data.id && typeof data.id === 'number') {
+      // Update existing in localStorage
       const index = allData[criteria]?.findIndex((item) => item.id === data.id);
       if (index !== -1) {
         allData[criteria][index] = data;
@@ -298,7 +327,29 @@ const Storage = {
     }
 
     localStorage.setItem(this.KEYS.NBA_DATA, JSON.stringify(allData));
+    
+    // Also save to Supabase backend (async, non-blocking)
+    this.saveNBADataToSupabase(criteria, data).catch(console.error);
+    
     return { success: true, message: "Data saved successfully!", data };
+  },
+
+  /**
+   * Save NBA data to Supabase backend
+   */
+  async saveNBADataToSupabase(criteria, data) {
+    try {
+      const response = await fetch('backend/nba_save.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ criteria, data })
+      });
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Failed to save to Supabase:', error);
+      return { success: false, error: error.message };
+    }
   },
 
   /**
@@ -312,7 +363,26 @@ const Storage = {
       allData[criteria] = allData[criteria].filter((item) => item.id !== id);
       localStorage.setItem(this.KEYS.NBA_DATA, JSON.stringify(allData));
     }
+    
+    // Also delete from Supabase (async, non-blocking)
+    this.deleteNBADataFromSupabase(id).catch(console.error);
+    
     return { success: true, message: "Data deleted successfully!" };
+  },
+
+  /**
+   * Delete NBA data from Supabase
+   */
+  async deleteNBADataFromSupabase(id) {
+    try {
+      const response = await fetch(`backend/nba_save.php?id=${id}`, {
+        method: 'DELETE'
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to delete from Supabase:', error);
+      return { success: false, error: error.message };
+    }
   },
 
   /**
@@ -320,6 +390,56 @@ const Storage = {
    */
   getAllNBAData() {
     return JSON.parse(localStorage.getItem(this.KEYS.NBA_DATA) || "{}");
+  },
+
+  // ==================== STUDENTS (Supabase) ====================
+
+  /**
+   * Add student via Supabase backend
+   */
+  async addStudentToSupabase(studentData) {
+    try {
+      const response = await fetch('backend/add_student_supabase.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(studentData)
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        // Also add to localStorage for immediate display
+        const students = this.getStudents();
+        students.push({
+          ...studentData,
+          id: result.student?.id || Date.now(),
+          createdAt: new Date().toISOString()
+        });
+        localStorage.setItem(this.KEYS.STUDENTS, JSON.stringify(students));
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('Failed to add student:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Get students from Supabase
+   */
+  async getStudentsFromSupabase() {
+    try {
+      const response = await fetch('backend/get_students_supabase.php');
+      const result = await response.json();
+      if (result.success && result.data) {
+        localStorage.setItem(this.KEYS.STUDENTS, JSON.stringify(result.data));
+        return result.data;
+      }
+      return this.getStudents();
+    } catch (error) {
+      console.error('Failed to fetch students:', error);
+      return this.getStudents();
+    }
   },
 
   // ==================== UTILITY ====================

@@ -66,20 +66,6 @@
         </div>
 
         <div>
-          <label class="block text-gray-700 text-sm font-bold mb-2"
-            >Confirm Password</label
-          >
-          <input
-            type="password"
-            name="confirmPassword"
-            id="confirmPassword"
-            required
-            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-            placeholder="Confirm your password"
-          />
-        </div>
-
-        <div>
           <label class="block text-gray-700 text-sm font-bold mb-2">Role</label>
           <select
             name="role"
@@ -123,15 +109,13 @@
           const name = document.getElementById("name").value;
           const email = document.getElementById("email").value;
           const password = document.getElementById("password").value;
-          const confirmPassword =
-            document.getElementById("confirmPassword").value;
           const role = document.getElementById("role").value;
           const messageDiv = document.getElementById("message");
 
-          if (password !== confirmPassword) {
+          if (password.length < 6) {
             messageDiv.className =
               "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded mb-4";
-            messageDiv.textContent = "Passwords do not match!";
+            messageDiv.textContent = "Password must be at least 6 characters!";
             messageDiv.classList.remove("hidden");
             return;
           }
