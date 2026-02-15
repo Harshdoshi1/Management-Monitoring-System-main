@@ -5,93 +5,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up - Department Monitoring System</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .input-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+      }
+      .input-with-icon {
+        padding-left: 40px;
+      }
+    </style>
   </head>
-  <body class="bg-gray-100 min-h-screen flex justify-center items-center py-8">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-      <div class="text-center mb-6">
-        <a href="index.html" class="text-blue-600 hover:underline text-sm"
-          >&larr; Back to Home</a
-        >
+  <body class="gradient-bg min-h-screen flex justify-center items-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+      <!-- Header -->
+      <div class="gradient-bg px-8 py-6 text-center">
+        <div class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-user-plus text-white text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white">Create Account</h2>
+        <p class="text-white/80 text-sm mt-1">Join the Department Monitoring System</p>
       </div>
 
-      <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">
-        Create Account
-      </h2>
+      <div class="p-8">
+        <a href="index.html" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 text-sm mb-6 transition">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Home
+        </a>
 
-      <div id="message" class="hidden border px-4 py-3 rounded mb-4"></div>
-
-      <form id="signupForm" class="space-y-4">
-        <div>
-          <label class="block text-gray-700 text-sm font-bold mb-2"
-            >Full Name</label
-          >
-          <input
-            type="text"
-            name="name"
-            id="name"
-            required
-            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-            placeholder="Enter your full name"
-          />
+        <div id="message" class="hidden border px-4 py-3 rounded-lg mb-4 flex items-center">
+          <i class="fas fa-info-circle mr-2"></i>
+          <span id="messageText"></span>
         </div>
 
-        <div>
-          <label class="block text-gray-700 text-sm font-bold mb-2"
-            >Email Address</label
+        <form id="signupForm" class="space-y-4">
+          <div>
+            <label class="block text-gray-700 text-sm font-semibold mb-2">
+              <i class="fas fa-user mr-1 text-indigo-500"></i> Full Name
+            </label>
+            <div class="relative">
+              <i class="fas fa-user input-icon"></i>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent input-with-icon transition"
+                placeholder="Enter your full name"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-gray-700 text-sm font-semibold mb-2">
+              <i class="fas fa-envelope mr-1 text-indigo-500"></i> Email Address
+            </label>
+            <div class="relative">
+              <i class="fas fa-envelope input-icon"></i>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent input-with-icon transition"
+                placeholder="Enter your email"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-gray-700 text-sm font-semibold mb-2">
+              <i class="fas fa-lock mr-1 text-indigo-500"></i> Password
+            </label>
+            <div class="relative">
+              <i class="fas fa-lock input-icon"></i>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                required
+                minlength="6"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent input-with-icon transition"
+                placeholder="Min 6 characters"
+              />
+              <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-gray-700 text-sm font-semibold mb-2">
+              <i class="fas fa-user-tag mr-1 text-indigo-500"></i> Role
+            </label>
+            <div class="relative">
+              <i class="fas fa-user-tag input-icon"></i>
+              <select
+                name="role"
+                id="role"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent input-with-icon transition appearance-none bg-white"
+              >
+                <option value="faculty">Faculty</option>
+                <option value="hod">HOD (Head of Department)</option>
+              </select>
+              <i class="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg hover:from-indigo-600 hover:to-purple-700 transition duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
-          <input
-            type="email"
-            name="email"
-            id="email"
-            required
-            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-            placeholder="Enter your email"
-          />
+            <i class="fas fa-user-plus mr-2"></i> Create Account
+          </button>
+        </form>
+
+        <div class="mt-6 text-center">
+          <p class="text-gray-600 text-sm">
+            Already have an account?
+            <a href="login.html" class="text-indigo-600 hover:text-indigo-800 font-semibold transition">
+              Sign in
+            </a>
+          </p>
         </div>
-
-        <div>
-          <label class="block text-gray-700 text-sm font-bold mb-2"
-            >Password</label
-          >
-          <input
-            type="password"
-            name="password"
-            id="password"
-            required
-            minlength="6"
-            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-            placeholder="Enter your password (min 6 characters)"
-          />
-        </div>
-
-        <div>
-          <label class="block text-gray-700 text-sm font-bold mb-2">Role</label>
-          <select
-            name="role"
-            id="role"
-            required
-            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-          >
-            <option value="FACULTY">Faculty</option>
-            <option value="HOD">HOD</option>
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200 font-semibold"
-        >
-          Create Account
-        </button>
-      </form>
-
-      <p class="mt-4 text-center text-gray-600 text-sm">
-        Already have an account?
-        <a href="login.html" class="text-blue-600 hover:underline font-semibold"
-          >Login</a
-        >
-      </p>
+      </div>
     </div>
 
     <script src="js/storage.js"></script>
@@ -100,6 +144,21 @@
       if (Storage.isLoggedIn()) {
         window.location.href = "dashboard.html";
       }
+
+      // Toggle password visibility
+      document.getElementById("togglePassword").addEventListener("click", function() {
+        const passwordInput = document.getElementById("password");
+        const icon = this.querySelector("i");
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          icon.classList.remove("fa-eye");
+          icon.classList.add("fa-eye-slash");
+        } else {
+          passwordInput.type = "password";
+          icon.classList.remove("fa-eye-slash");
+          icon.classList.add("fa-eye");
+        }
+      });
 
       document
         .getElementById("signupForm")
@@ -111,29 +170,30 @@
           const password = document.getElementById("password").value;
           const role = document.getElementById("role").value;
           const messageDiv = document.getElementById("message");
+          const messageText = document.getElementById("messageText");
 
           if (password.length < 6) {
             messageDiv.className =
-              "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded mb-4";
-            messageDiv.textContent = "Password must be at least 6 characters!";
+              "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded-lg mb-4 flex items-center";
+            messageDiv.querySelector("i").className = "fas fa-exclamation-circle mr-2";
+            messageText.textContent = "Password must be at least 6 characters!";
             messageDiv.classList.remove("hidden");
             return;
           }
 
           try {
-            // Call Supabase directly via Storage module
-            const result = await Storage.registerWithSupabase(
-              name,
-              email,
-              password,
-              role,
-            );
+            const response = await fetch('backend/register.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, email, password, role })
+            });
+            const result = await response.json();
 
             if (result.success) {
               messageDiv.className =
-                "bg-green-100 text-green-700 border border-green-400 px-4 py-3 rounded mb-4";
-              messageDiv.textContent =
-                result.message + " Redirecting to login...";
+                "bg-green-100 text-green-700 border border-green-400 px-4 py-3 rounded-lg mb-4 flex items-center";
+              messageDiv.querySelector("i").className = "fas fa-check-circle mr-2";
+              messageText.textContent = result.message + " Redirecting to login...";
               messageDiv.classList.remove("hidden");
 
               setTimeout(() => {
@@ -141,15 +201,17 @@
               }, 1500);
             } else {
               messageDiv.className =
-                "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded mb-4";
-              messageDiv.textContent = result.message;
+                "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded-lg mb-4 flex items-center";
+              messageDiv.querySelector("i").className = "fas fa-exclamation-circle mr-2";
+              messageText.textContent = result.message;
               messageDiv.classList.remove("hidden");
             }
           } catch (error) {
             console.error("Registration error:", error);
             messageDiv.className =
-              "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded mb-4";
-            messageDiv.textContent = "Registration failed. Please try again.";
+              "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded-lg mb-4 flex items-center";
+            messageDiv.querySelector("i").className = "fas fa-exclamation-circle mr-2";
+            messageText.textContent = "Registration failed. Please try again.";
             messageDiv.classList.remove("hidden");
           }
         });

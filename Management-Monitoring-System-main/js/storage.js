@@ -1,10 +1,56 @@
 /**
- * Storage Module - Handles all data persistence using localStorage
- * This replaces the PHP/MySQL backend for Vercel static deployment
+ * Storage Module - Handles all data persistence using Supabase + localStorage
+ * Works on Vercel by calling Supabase REST API directly from browser
  */
 
+// Supabase Configuration
+const SUPABASE_URL = "https://ijdeeyylabqrsgdebliz.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqZGVleXlsYWJxcnNnZGVibGl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MTcyNjAsImV4cCI6MjA4NjM5MzI2MH0.UbzkskQuiP92ZEXSnJFibWc-mJvzMEs2L-H9xeQjAQY";
+
+/**
+ * Make Supabase REST API request
+ */
+async function supabaseRequest(endpoint, method = "GET", data = null) {
+  const url = SUPABASE_URL + endpoint;
+
+  const headers = {
+    apikey: SUPABASE_ANON_KEY,
+    Authorization: "Bearer " + SUPABASE_ANON_KEY,
+    "Content-Type": "application/json",
+    Prefer: "return=representation",
+  };
+
+  const options = {
+    method: method,
+    headers: headers,
+  };
+
+  if (data && (method === "POST" || method === "PUT" || method === "PATCH")) {
+    options.body = JSON.stringify(data);
+  }
+
+  try {
+    const response = await fetch(url, options);
+    const responseData = await response.json();
+    return {
+      status: response.status,
+      data: responseData,
+      ok: response.ok,
+    };
+  } catch (error) {
+    console.error("Supabase request error:", error);
+    return {
+      status: 500,
+      data: null,
+      error: error.message,
+      ok: false,
+    };
+  }
+}
+
 const Storage = {
-  // Keys for localStorage
+  // Keys for localStorage (fallback/cache)
   KEYS: {
     USERS: "dms_users",
     CURRENT_USER: "dms_current_user",
@@ -17,20 +63,7 @@ const Storage = {
    * Initialize default data if not exists
    */
   init() {
-    // Initialize users with demo account
-    if (!localStorage.getItem(this.KEYS.USERS)) {
-      const defaultUsers = [
-        {
-          id: 1,
-          name: "Demo User",
-          email: "demo@example.com",
-          password: "demo123",
-        },
-      ];
-      localStorage.setItem(this.KEYS.USERS, JSON.stringify(defaultUsers));
-    }
-
-    // Initialize empty arrays for other data
+    // Initialize empty arrays for local cache
     if (!localStorage.getItem(this.KEYS.STUDENTS)) {
       localStorage.setItem(this.KEYS.STUDENTS, JSON.stringify([]));
     }
@@ -58,56 +91,60 @@ const Storage = {
   },
 
   /**
-   * Set user after login from backend
+   * Set user (called after successful login/register)
    */
   setUser(user) {
     localStorage.setItem(this.KEYS.CURRENT_USER, JSON.stringify(user));
   },
 
   /**
-   * Login user
+   * Login user via backend (proper password verification with bcrypt)
    */
-  login(email, password) {
-    const users = JSON.parse(localStorage.getItem(this.KEYS.USERS) || "[]");
-    const user = users.find(
-      (u) => u.email === email && u.password === password,
-    );
+  async loginWithSupabase(email, password) {
+    try {
+      const response = await fetch('backend/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-    if (user) {
-      localStorage.setItem(
-        this.KEYS.CURRENT_USER,
-        JSON.stringify({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        }),
-      );
-      return { success: true, message: "Login successful!" };
+      const result = await response.json();
+
+      if (result.success && result.user) {
+        localStorage.setItem(this.KEYS.CURRENT_USER, JSON.stringify(result.user));
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Login error:", error);
+      return { success: false, message: "Login failed. Please try again." };
     }
-    return { success: false, message: "Invalid email or password." };
   },
 
   /**
-   * Register new user
+   * Register new user via Supabase
+   * NOTE: This function now calls the backend PHP for proper password hashing
    */
-  register(name, email, password) {
-    const users = JSON.parse(localStorage.getItem(this.KEYS.USERS) || "[]");
-
-    // Check if email exists
-    if (users.find((u) => u.email === email)) {
-      return { success: false, message: "Email already registered." };
+  async registerWithSupabase(name, email, password, role = "faculty") {
+    try {
+      // Call backend register.php which handles password hashing
+      const response = await fetch('backend/register.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role: role.toLowerCase() })
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("Registration error:", error);
+      return { success: false, message: "Registration failed. Please try again." };
     }
-
-    const newUser = {
-      id: Date.now(),
-      name,
-      email,
-      password,
-    };
-    users.push(newUser);
-    localStorage.setItem(this.KEYS.USERS, JSON.stringify(users));
-
-    return { success: true, message: "Registration successful! Please login." };
+  },
+      console.error("Registration error:", error);
+      return {
+        success: false,
+        message: "Registration failed. Please try again.",
+      };
+    }
   },
 
   /**
@@ -120,14 +157,80 @@ const Storage = {
   // ==================== STUDENTS ====================
 
   /**
-   * Get all students
+   * Get all students (from localStorage cache)
    */
   getStudents() {
     return JSON.parse(localStorage.getItem(this.KEYS.STUDENTS) || "[]");
   },
 
   /**
-   * Add student
+   * Get students from Supabase
+   */
+  async getStudentsFromSupabase() {
+    try {
+      const response = await supabaseRequest(
+        "/rest/v1/students?order=created_at.desc&limit=100",
+        "GET",
+      );
+      if (response.ok && response.data) {
+        localStorage.setItem(this.KEYS.STUDENTS, JSON.stringify(response.data));
+        return response.data;
+      }
+    } catch (error) {
+      console.error("Failed to fetch students:", error);
+    }
+    return this.getStudents();
+  },
+
+  /**
+   * Add student to Supabase
+   */
+  async addStudentToSupabase(student) {
+    try {
+      const studentData = {
+        enrollment_number: student.enrollmentNo || student.enrollment_number,
+        student_name:
+          (student.firstName || "") + " " + (student.lastName || ""),
+        batch: student.batch,
+        academic_year: student.academicYear || student.academic_year,
+        year_of_study: parseInt(
+          student.yearOfStudy || student.year_of_study || 1,
+        ),
+        semester: parseInt(student.semester || 1),
+        created_at: new Date().toISOString(),
+      };
+
+      const response = await supabaseRequest(
+        "/rest/v1/students",
+        "POST",
+        studentData,
+      );
+
+      if (response.ok) {
+        // Also add to localStorage
+        const students = this.getStudents();
+        const newStudent = Array.isArray(response.data)
+          ? response.data[0]
+          : response.data;
+        students.push(newStudent);
+        localStorage.setItem(this.KEYS.STUDENTS, JSON.stringify(students));
+
+        return {
+          success: true,
+          message: "Student added successfully!",
+          student: newStudent,
+        };
+      } else {
+        return { success: false, message: "Failed to add student" };
+      }
+    } catch (error) {
+      console.error("Add student error:", error);
+      return { success: false, message: "Failed to add student" };
+    }
+  },
+
+  /**
+   * Add student (localStorage fallback)
    */
   addStudent(student) {
     const students = this.getStudents();
@@ -135,6 +238,10 @@ const Storage = {
     student.createdAt = new Date().toISOString();
     students.push(student);
     localStorage.setItem(this.KEYS.STUDENTS, JSON.stringify(students));
+
+    // Also try to save to Supabase (async, non-blocking)
+    this.addStudentToSupabase(student).catch(console.error);
+
     return { success: true, message: "Student added successfully!", student };
   },
 
@@ -171,10 +278,13 @@ const Storage = {
       query = query.toLowerCase();
       students = students.filter(
         (s) =>
-          s.firstName.toLowerCase().includes(query) ||
-          s.lastName.toLowerCase().includes(query) ||
-          s.grNo.toLowerCase().includes(query) ||
-          s.enrollmentNo.toLowerCase().includes(query),
+          (s.firstName && s.firstName.toLowerCase().includes(query)) ||
+          (s.lastName && s.lastName.toLowerCase().includes(query)) ||
+          (s.student_name && s.student_name.toLowerCase().includes(query)) ||
+          (s.grNo && s.grNo.toLowerCase().includes(query)) ||
+          (s.enrollmentNo && s.enrollmentNo.toLowerCase().includes(query)) ||
+          (s.enrollment_number &&
+            s.enrollment_number.toLowerCase().includes(query)),
       );
     }
 
@@ -183,7 +293,9 @@ const Storage = {
     }
     if (filters.academicYear) {
       students = students.filter(
-        (s) => s.academicYear === filters.academicYear,
+        (s) =>
+          s.academicYear === filters.academicYear ||
+          s.academic_year === filters.academicYear,
       );
     }
 
@@ -244,10 +356,10 @@ const Storage = {
       query = query.toLowerCase();
       facultyList = facultyList.filter(
         (f) =>
-          f.firstName.toLowerCase().includes(query) ||
-          f.lastName.toLowerCase().includes(query) ||
-          f.facultyId.toLowerCase().includes(query) ||
-          f.department.toLowerCase().includes(query),
+          (f.firstName && f.firstName.toLowerCase().includes(query)) ||
+          (f.lastName && f.lastName.toLowerCase().includes(query)) ||
+          (f.facultyId && f.facultyId.toLowerCase().includes(query)) ||
+          (f.department && f.department.toLowerCase().includes(query)),
       );
     }
 
@@ -263,7 +375,7 @@ const Storage = {
   // ==================== NBA DATA ====================
 
   /**
-   * Get NBA data for specific criteria (with Supabase sync)
+   * Get NBA data for specific criteria (from localStorage or Supabase)
    */
   getNBAData(criteria) {
     const allData = JSON.parse(
@@ -273,23 +385,25 @@ const Storage = {
   },
 
   /**
-   * Get NBA data from Supabase backend
+   * Get NBA data from Supabase
    */
   async getNBADataFromSupabase(criteria) {
     try {
-      const response = await fetch(
-        `backend/nba_save.php?criteria=${encodeURIComponent(criteria)}`,
+      const response = await supabaseRequest(
+        "/rest/v1/nba_data?criteria=eq." +
+          encodeURIComponent(criteria) +
+          "&order=created_at.desc",
+        "GET",
       );
-      const result = await response.json();
-      if (result.success && result.data) {
-        // Parse the data field and update local storage
-        const parsedData = result.data.map((item) => ({
+
+      if (response.ok && response.data) {
+        const parsedData = response.data.map((item) => ({
           ...JSON.parse(item.data || "{}"),
           id: item.id,
           createdAt: item.created_at,
         }));
 
-        // Update local storage cache
+        // Update localStorage cache
         const allData = JSON.parse(
           localStorage.getItem(this.KEYS.NBA_DATA) || "{}",
         );
@@ -298,15 +412,14 @@ const Storage = {
 
         return parsedData;
       }
-      return this.getNBAData(criteria);
     } catch (error) {
-      console.error("Failed to fetch from Supabase:", error);
-      return this.getNBAData(criteria);
+      console.error("Failed to fetch NBA data:", error);
     }
+    return this.getNBAData(criteria);
   },
 
   /**
-   * Save NBA data for specific criteria (with Supabase sync)
+   * Save NBA data for specific criteria
    */
   saveNBAData(criteria, data) {
     const allData = JSON.parse(
@@ -332,24 +445,30 @@ const Storage = {
 
     localStorage.setItem(this.KEYS.NBA_DATA, JSON.stringify(allData));
 
-    // Also save to Supabase backend (async, non-blocking)
+    // Also save to Supabase (async, non-blocking)
     this.saveNBADataToSupabase(criteria, data).catch(console.error);
 
     return { success: true, message: "Data saved successfully!", data };
   },
 
   /**
-   * Save NBA data to Supabase backend
+   * Save NBA data to Supabase
    */
   async saveNBADataToSupabase(criteria, data) {
     try {
-      const response = await fetch("backend/nba_save.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ criteria, data }),
-      });
-      const result = await response.json();
-      return result;
+      const nbaData = {
+        criteria: criteria,
+        data: JSON.stringify(data),
+        academic_year: data.academicYear || new Date().getFullYear().toString(),
+        created_at: new Date().toISOString(),
+      };
+
+      const response = await supabaseRequest(
+        "/rest/v1/nba_data",
+        "POST",
+        nbaData,
+      );
+      return { success: response.ok, data: response.data };
     } catch (error) {
       console.error("Failed to save to Supabase:", error);
       return { success: false, error: error.message };
@@ -367,26 +486,7 @@ const Storage = {
       allData[criteria] = allData[criteria].filter((item) => item.id !== id);
       localStorage.setItem(this.KEYS.NBA_DATA, JSON.stringify(allData));
     }
-
-    // Also delete from Supabase (async, non-blocking)
-    this.deleteNBADataFromSupabase(id).catch(console.error);
-
     return { success: true, message: "Data deleted successfully!" };
-  },
-
-  /**
-   * Delete NBA data from Supabase
-   */
-  async deleteNBADataFromSupabase(id) {
-    try {
-      const response = await fetch(`backend/nba_save.php?id=${id}`, {
-        method: "DELETE",
-      });
-      return await response.json();
-    } catch (error) {
-      console.error("Failed to delete from Supabase:", error);
-      return { success: false, error: error.message };
-    }
   },
 
   /**
@@ -394,56 +494,6 @@ const Storage = {
    */
   getAllNBAData() {
     return JSON.parse(localStorage.getItem(this.KEYS.NBA_DATA) || "{}");
-  },
-
-  // ==================== STUDENTS (Supabase) ====================
-
-  /**
-   * Add student via Supabase backend
-   */
-  async addStudentToSupabase(studentData) {
-    try {
-      const response = await fetch("backend/add_student_supabase.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(studentData),
-      });
-      const result = await response.json();
-
-      if (result.success) {
-        // Also add to localStorage for immediate display
-        const students = this.getStudents();
-        students.push({
-          ...studentData,
-          id: result.student?.id || Date.now(),
-          createdAt: new Date().toISOString(),
-        });
-        localStorage.setItem(this.KEYS.STUDENTS, JSON.stringify(students));
-      }
-
-      return result;
-    } catch (error) {
-      console.error("Failed to add student:", error);
-      return { success: false, error: error.message };
-    }
-  },
-
-  /**
-   * Get students from Supabase
-   */
-  async getStudentsFromSupabase() {
-    try {
-      const response = await fetch("backend/get_students_supabase.php");
-      const result = await response.json();
-      if (result.success && result.data) {
-        localStorage.setItem(this.KEYS.STUDENTS, JSON.stringify(result.data));
-        return result.data;
-      }
-      return this.getStudents();
-    } catch (error) {
-      console.error("Failed to fetch students:", error);
-      return this.getStudents();
-    }
   },
 
   // ==================== UTILITY ====================
@@ -461,7 +511,11 @@ const Storage = {
    */
   getUniqueAcademicYears() {
     const students = this.getStudents();
-    return [...new Set(students.map((s) => s.academicYear).filter(Boolean))]
+    return [
+      ...new Set(
+        students.map((s) => s.academicYear || s.academic_year).filter(Boolean),
+      ),
+    ]
       .sort()
       .reverse();
   },

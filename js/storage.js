@@ -98,44 +98,23 @@ const Storage = {
   },
 
   /**
-   * Login user via Supabase
+   * Login user via backend (proper password verification with bcrypt)
    */
   async loginWithSupabase(email, password) {
     try {
-      // Find user by email
-      const response = await supabaseRequest(
-        "/rest/v1/users?email=eq." +
-          encodeURIComponent(email) +
-          "&select=id,name,email,password_hash,roles",
-        "GET",
-      );
+      const response = await fetch('backend/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-      if (!response.ok || !response.data || response.data.length === 0) {
-        return { success: false, message: "Invalid email or password" };
+      const result = await response.json();
+
+      if (result.success && result.user) {
+        localStorage.setItem(this.KEYS.CURRENT_USER, JSON.stringify(result.user));
       }
 
-      const user = response.data[0];
-
-      // For demo: accept plain text password comparison
-      // In production, you'd need a server-side endpoint for password verification
-      // Since bcrypt can't run in browser, we'll check against password_hash as plain text for demo
-      // This is a limitation - real auth should use Supabase Auth
-
-      // Store user in localStorage
-      const userData = {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: Array.isArray(user.roles) ? user.roles[0] : user.roles,
-      };
-
-      localStorage.setItem(this.KEYS.CURRENT_USER, JSON.stringify(userData));
-
-      return {
-        success: true,
-        message: "Login successful!",
-        user: userData,
-      };
+      return result;
     } catch (error) {
       console.error("Login error:", error);
       return { success: false, message: "Login failed. Please try again." };
@@ -144,60 +123,22 @@ const Storage = {
 
   /**
    * Register new user via Supabase
+   * NOTE: This function now calls the backend PHP for proper password hashing
    */
-  async registerWithSupabase(name, email, password, role = "FACULTY") {
+  async registerWithSupabase(name, email, password, role = "faculty") {
     try {
-      // Check if email already exists
-      const checkResponse = await supabaseRequest(
-        "/rest/v1/users?email=eq." + encodeURIComponent(email) + "&select=id",
-        "GET",
-      );
-
-      if (
-        checkResponse.ok &&
-        checkResponse.data &&
-        checkResponse.data.length > 0
-      ) {
-        return { success: false, message: "Email already registered" };
-      }
-
-      // Insert new user
-      const userData = {
-        name: name,
-        email: email,
-        password_hash: password, // Store as plain text for demo (Supabase Auth should be used for production)
-        roles: [role],
-        created_at: new Date().toISOString(),
-      };
-
-      const insertResponse = await supabaseRequest(
-        "/rest/v1/users",
-        "POST",
-        userData,
-      );
-
-      if (insertResponse.ok) {
-        const newUser = Array.isArray(insertResponse.data)
-          ? insertResponse.data[0]
-          : insertResponse.data;
-        return {
-          success: true,
-          message: "Registration successful",
-          user: {
-            id: newUser?.id,
-            name: name,
-            email: email,
-            role: role,
-          },
-        };
-      } else {
-        console.error("Registration error:", insertResponse);
-        return {
-          success: false,
-          message: "Registration failed. Please try again.",
-        };
-      }
+      // Call backend register.php which handles password hashing
+      const response = await fetch('backend/register.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role: role.toLowerCase() })
+      });
+      return await response.json();
     } catch (error) {
+      console.error("Registration error:", error);
+      return { success: false, message: "Registration failed. Please try again." };
+    }
+  },
       console.error("Registration error:", error);
       return {
         success: false,

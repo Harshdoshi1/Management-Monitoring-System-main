@@ -29,7 +29,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 $name = trim($input['name'] ?? '');
 $email = trim($input['email'] ?? '');
 $password = $input['password'] ?? '';
-$role = trim($input['role'] ?? 'FACULTY');
+$role = strtolower(trim($input['role'] ?? 'faculty'));
 
 // Validation
 if (empty($name) || empty($email) || empty($password)) {
@@ -47,10 +47,10 @@ if (strlen($password) < 6) {
     exit;
 }
 
-// Validate role
-$validRoles = ['HOD', 'FACULTY'];
+// Validate role - convert to lowercase
+$validRoles = ['hod', 'faculty'];
 if (!in_array($role, $validRoles)) {
-    $role = 'FACULTY';
+    $role = 'faculty';
 }
 
 /**

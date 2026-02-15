@@ -1,11 +1,17 @@
 /**
  * NBA Criteria JavaScript - Handles all NBA criteria forms and calculations
+ * Redesigned per NBA SAR Format for Tier-II Engineering Programs
  */
 
 // Criteria definitions
 const CRITERIA_CONFIG = {
+  // ============================================
+  // CRITERION 1: Vision, Mission and Program Educational Objectives (PEOs)
+  // Max Marks: 30 (all INFO fields)
+  // ============================================
   1.1: {
-    title: "Vision & Mission (Criterion 1.1)",
+    title: "Vision & Mission Statement (Criterion 1.1)",
+    maxMarks: 5,
     fields: [
       {
         name: "academicYear",
@@ -15,21 +21,45 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "vision",
-        label: "Vision Statement",
+        name: "instituteVision",
+        label: "Institute Vision Statement",
         type: "textarea",
+        placeholder: "Describe the institute's vision...",
         required: true,
       },
       {
-        name: "mission",
-        label: "Mission Statement",
+        name: "instituteMission",
+        label: "Institute Mission Statement",
         type: "textarea",
+        placeholder: "Describe the institute's mission...",
+        required: true,
+      },
+      {
+        name: "departmentVision",
+        label: "Department Vision Statement",
+        type: "textarea",
+        placeholder: "Describe the department's vision...",
+        required: true,
+      },
+      {
+        name: "departmentMission",
+        label: "Department Mission Statement",
+        type: "textarea",
+        placeholder: "Describe the department's mission...",
+        required: true,
+      },
+      {
+        name: "disseminationProcess",
+        label: "Dissemination Process",
+        type: "textarea",
+        placeholder: "How are vision and mission communicated to stakeholders?",
         required: true,
       },
     ],
   },
   1.2: {
-    title: "Program Educational Objectives (Criterion 1.2)",
+    title: "Program Educational Objectives (PEOs) (Criterion 1.2)",
+    maxMarks: 10,
     fields: [
       {
         name: "academicYear",
@@ -38,17 +68,46 @@ const CRITERIA_CONFIG = {
         placeholder: "2023-24",
         required: true,
       },
-      { name: "peoTitle", label: "PEO Title", type: "text", required: true },
       {
-        name: "peoStatement",
-        label: "PEO Statement",
+        name: "peo1",
+        label: "PEO 1",
         type: "textarea",
+        placeholder: "Program Educational Objective 1...",
+        required: true,
+      },
+      {
+        name: "peo2",
+        label: "PEO 2",
+        type: "textarea",
+        placeholder: "Program Educational Objective 2...",
+        required: true,
+      },
+      {
+        name: "peo3",
+        label: "PEO 3",
+        type: "textarea",
+        placeholder: "Program Educational Objective 3...",
+        required: true,
+      },
+      {
+        name: "peo4",
+        label: "PEO 4 (Optional)",
+        type: "textarea",
+        placeholder: "Program Educational Objective 4...",
+        required: false,
+      },
+      {
+        name: "stakeholdersInvolved",
+        label: "Stakeholders Involved in PEO Definition",
+        type: "textarea",
+        placeholder: "Faculty, Industry, Alumni, Parents, Students...",
         required: true,
       },
     ],
   },
   1.3: {
-    title: "PEO to Mission Mapping (Criterion 1.3)",
+    title: "PEO-Mission Mapping (Criterion 1.3)",
+    maxMarks: 5,
     fields: [
       {
         name: "academicYear",
@@ -58,15 +117,25 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "process",
-        label: "Mapping Process Description",
+        name: "mappingMatrix",
+        label: "PEO-Mission Mapping Matrix",
         type: "textarea",
+        placeholder:
+          "Describe how each PEO maps to mission statements (use H/M/L or 3/2/1)...",
+        required: true,
+      },
+      {
+        name: "justification",
+        label: "Justification for Mapping",
+        type: "textarea",
+        placeholder: "Explain the rationale behind each mapping...",
         required: true,
       },
     ],
   },
   1.4: {
-    title: "PEO Review Process (Criterion 1.4)",
+    title: "PEO Review & Revision Process (Criterion 1.4)",
+    maxMarks: 5,
     fields: [
       {
         name: "academicYear",
@@ -76,15 +145,39 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "process",
+        name: "reviewFrequency",
+        label: "Review Frequency",
+        type: "text",
+        placeholder: "e.g., Every 3 years",
+        required: true,
+      },
+      {
+        name: "reviewProcess",
         label: "Review Process Description",
         type: "textarea",
+        placeholder: "Describe the process for reviewing and revising PEOs...",
+        required: true,
+      },
+      {
+        name: "stakeholderFeedback",
+        label: "Stakeholder Feedback Mechanism",
+        type: "textarea",
+        placeholder:
+          "How is feedback collected from stakeholders for PEO revision?",
+        required: true,
+      },
+      {
+        name: "lastRevisionDate",
+        label: "Last Revision Date",
+        type: "text",
+        placeholder: "e.g., June 2023",
         required: true,
       },
     ],
   },
   1.5: {
-    title: "PEO Consistency (Criterion 1.5)",
+    title: "PEO Consistency with Graduate Attributes (Criterion 1.5)",
+    maxMarks: 5,
     fields: [
       {
         name: "academicYear",
@@ -94,21 +187,29 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "peoMissionMatrix",
-        label: "PEO-Mission Consistency Matrix",
+        name: "consistencyMatrix",
+        label: "PEO-Graduate Attributes Consistency Matrix",
         type: "textarea",
+        placeholder: "Show how PEOs align with NBA Graduate Attributes...",
         required: true,
       },
       {
-        name: "justification",
-        label: "Justification",
+        name: "evidenceOfConsistency",
+        label: "Evidence of Consistency",
         type: "textarea",
+        placeholder: "Provide evidence demonstrating consistency...",
         required: true,
       },
     ],
   },
-  2.1: {
-    title: "Program Curriculum (Criterion 2.1)",
+
+  // ============================================
+  // CRITERION 2: Program Curriculum and Teaching-Learning Processes
+  // Max Marks: 120 (all INFO fields)
+  // ============================================
+  "2.1.1": {
+    title: "Curriculum Design (Criterion 2.1.1)",
+    maxMarks: 20,
     fields: [
       {
         name: "academicYear",
@@ -118,9 +219,10 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "description",
-        label: "Curriculum Description",
+        name: "curriculumStructure",
+        label: "Curriculum Structure Description",
         type: "textarea",
+        placeholder: "Describe overall curriculum structure...",
         required: true,
       },
       {
@@ -136,22 +238,41 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "scienceCredits",
+        name: "basicScienceCredits",
         label: "Basic Science Credits",
         type: "number",
         required: true,
       },
       {
         name: "engineeringCredits",
-        label: "Engineering Credits",
+        label: "Engineering Science Credits",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "professionalCoreCredits",
+        label: "Professional Core Credits",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "electiveCredits",
+        label: "Elective Credits",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "projectCredits",
+        label: "Project/Internship Credits",
         type: "number",
         required: true,
       },
     ],
     calculations: ["creditDistribution"],
   },
-  2.2: {
-    title: "Teaching-Learning Processes (Criterion 2.2)",
+  "2.1.2": {
+    title: "Syllabus Content (Criterion 2.1.2)",
+    maxMarks: 15,
     fields: [
       {
         name: "academicYear",
@@ -161,15 +282,274 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "description",
-        label: "Teaching Methods Description",
+        name: "syllabusRelevance",
+        label: "Syllabus Relevance to Industry",
         type: "textarea",
+        placeholder: "How does syllabus align with industry requirements?",
+        required: true,
+      },
+      {
+        name: "latestTechnologies",
+        label: "Latest Technologies Covered",
+        type: "textarea",
+        placeholder: "List emerging technologies included in curriculum...",
+        required: true,
+      },
+      {
+        name: "revisionFrequency",
+        label: "Syllabus Revision Frequency",
+        type: "text",
+        placeholder: "e.g., Every 2 years",
         required: true,
       },
     ],
   },
-  3.1: {
-    title: "Course Outcomes (Criterion 3.1)",
+  "2.1.3": {
+    title: "Laboratory Courses (Criterion 2.1.3)",
+    maxMarks: 15,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "labCoursesList",
+        label: "List of Laboratory Courses",
+        type: "textarea",
+        placeholder: "List all lab courses with credits...",
+        required: true,
+      },
+      {
+        name: "totalLabCredits",
+        label: "Total Laboratory Credits",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "labEquipmentAdequacy",
+        label: "Lab Equipment Adequacy",
+        type: "textarea",
+        placeholder: "Describe availability and quality of lab equipment...",
+        required: true,
+      },
+    ],
+  },
+  "2.1.4": {
+    title: "Industry Interaction in Curriculum (Criterion 2.1.4)",
+    maxMarks: 10,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "industryInvolvement",
+        label: "Industry Involvement in Curriculum Design",
+        type: "textarea",
+        placeholder:
+          "Describe how industry experts contribute to curriculum...",
+        required: true,
+      },
+      {
+        name: "industrialVisits",
+        label: "Industrial Visits/Tours",
+        type: "textarea",
+        placeholder: "Number and details of industrial visits...",
+        required: true,
+      },
+      {
+        name: "guestLectures",
+        label: "Guest Lectures from Industry",
+        type: "number",
+        placeholder: "Number of guest lectures per year",
+        required: true,
+      },
+    ],
+  },
+  "2.2.1": {
+    title: "Teaching Methods (Criterion 2.2.1)",
+    maxMarks: 15,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "teachingMethodologies",
+        label: "Teaching Methodologies Used",
+        type: "textarea",
+        placeholder:
+          "Chalk-board, PPT, Active Learning, Flipped Classroom, etc.",
+        required: true,
+      },
+      {
+        name: "ictUsage",
+        label: "ICT Tools Used in Teaching",
+        type: "textarea",
+        placeholder: "LMS, Online resources, Simulation tools, etc.",
+        required: true,
+      },
+      {
+        name: "studentCentricMethods",
+        label: "Student-Centric Learning Methods",
+        type: "textarea",
+        placeholder: "Problem-based learning, Case studies, Mini-projects...",
+        required: true,
+      },
+    ],
+  },
+  "2.2.2": {
+    title: "Continuous Assessment (Criterion 2.2.2)",
+    maxMarks: 15,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "assessmentMethods",
+        label: "Assessment Methods",
+        type: "textarea",
+        placeholder: "Tests, Assignments, Quizzes, Presentations, etc.",
+        required: true,
+      },
+      {
+        name: "frequencyOfAssessment",
+        label: "Frequency of Assessment",
+        type: "text",
+        placeholder: "e.g., 2 CIEs per semester",
+        required: true,
+      },
+      {
+        name: "feedbackMechanism",
+        label: "Feedback Mechanism to Students",
+        type: "textarea",
+        placeholder: "How are assessment results communicated?",
+        required: true,
+      },
+    ],
+  },
+  "2.2.3": {
+    title: "Remedial Measures (Criterion 2.2.3)",
+    maxMarks: 10,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "identificationProcess",
+        label: "Slow Learner Identification Process",
+        type: "textarea",
+        placeholder: "How are slow learners identified?",
+        required: true,
+      },
+      {
+        name: "remedialClasses",
+        label: "Remedial Classes Conducted",
+        type: "textarea",
+        placeholder: "Details of remedial teaching provided...",
+        required: true,
+      },
+      {
+        name: "advancedLearners",
+        label: "Support for Advanced Learners",
+        type: "textarea",
+        placeholder: "Additional challenges for advanced students...",
+        required: true,
+      },
+    ],
+  },
+  "2.2.4": {
+    title: "Project/Internship (Criterion 2.2.4)",
+    maxMarks: 10,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "projectTypes",
+        label: "Types of Projects",
+        type: "textarea",
+        placeholder: "Mini-projects, Major projects, Industry projects...",
+        required: true,
+      },
+      {
+        name: "internshipDetails",
+        label: "Internship Program Details",
+        type: "textarea",
+        placeholder: "Duration, partner companies, student participation...",
+        required: true,
+      },
+      {
+        name: "studentsWithInternship",
+        label: "Students Completing Internship",
+        type: "number",
+        required: true,
+      },
+    ],
+  },
+  "2.2.5": {
+    title: "Self-Learning (Criterion 2.2.5)",
+    maxMarks: 10,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "moocCourses",
+        label: "MOOC/Online Courses",
+        type: "textarea",
+        placeholder: "NPTEL, Coursera, edX courses offered...",
+        required: true,
+      },
+      {
+        name: "selfLearningCredits",
+        label: "Self-Learning Credits",
+        type: "number",
+        placeholder: "Credits allocated for self-learning",
+        required: true,
+      },
+      {
+        name: "certifications",
+        label: "Certifications Encouraged",
+        type: "textarea",
+        placeholder: "Industry certifications students can pursue...",
+        required: true,
+      },
+    ],
+  },
+
+  // ============================================
+  // CRITERION 3: Course Outcomes and Program Outcomes
+  // Max Marks: 175 (all INFO fields)
+  // ============================================
+  "3.1.1": {
+    title: "Course Outcomes Definition (Criterion 3.1.1)",
+    maxMarks: 30,
     fields: [
       {
         name: "academicYear",
@@ -187,8 +567,8 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "subjectCode",
-        label: "Subject Code",
+        name: "courseCode",
+        label: "Course Code",
         type: "text",
         required: true,
       },
@@ -1138,15 +1518,20 @@ const CRITERIA_CONFIG = {
 };
 
 /**
- * Load criteria content
+ * Load criteria content with improved UI
  */
 function loadCriteria(criteria) {
   const config = CRITERIA_CONFIG[criteria];
 
   if (!config) {
     document.getElementById("criteriaContent").innerHTML = `
-            <div class="bg-red-100 text-red-700 p-4 rounded">
-                Invalid criteria: ${escapeHtml(criteria)}. <a href="dashboard.html?tab=nba" class="underline">Return to NBA page</a>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    Invalid criteria: ${escapeHtml(criteria)}. <a href="dashboard.html?tab=nba" class="underline ml-2 font-semibold">Return to NBA page</a>
+                </div>
             </div>`;
     return;
   }
@@ -1154,19 +1539,45 @@ function loadCriteria(criteria) {
   document.getElementById("criteriaTitle").textContent = config.title;
   document.title = config.title + " - DMS";
 
+  // Calculate max marks display
+  const maxMarksDisplay = config.maxMarks
+    ? `<span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">Max: ${config.maxMarks} marks</span>`
+    : "";
+
   const content = `
+        <!-- Criteria Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-xl mb-6 shadow-lg">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold">${escapeHtml(config.title)}</h2>
+                    <p class="text-blue-100 mt-1">Criterion ${escapeHtml(criteria)}</p>
+                </div>
+                ${maxMarksDisplay}
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Form Section -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-xl font-semibold mb-4 text-gray-800">Enter Data</h2>
-                <form id="criteriaForm" class="space-y-4">
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Enter Data</h2>
+                </div>
+                <form id="criteriaForm">
                     <input type="hidden" name="id" id="editId" value="">
                     ${generateFormFields(config.fields)}
-                    <div class="flex gap-2">
-                        <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold">
+                    <div class="flex gap-3 mt-6 pt-4 border-t">
+                        <button type="submit" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg hover:from-blue-700 hover:to-indigo-700 font-semibold shadow-md transition-all duration-200 flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
                             Save Data
                         </button>
-                        <button type="button" onclick="clearForm()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+                        <button type="button" onclick="clearForm()" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-semibold transition-all duration-200">
                             Clear
                         </button>
                     </div>
@@ -1174,33 +1585,56 @@ function loadCriteria(criteria) {
             </div>
 
             <!-- Calculations Section -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-xl font-semibold mb-4 text-gray-800">Calculations & Results</h2>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Calculations & Results</h2>
+                </div>
                 <div id="calculationResults" class="space-y-4">
-                    <p class="text-gray-500">Enter data and calculations will appear here automatically.</p>
+                    <div class="bg-gray-50 rounded-lg p-4 text-center">
+                        <svg class="w-12 h-12 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                        <p class="text-gray-500">Enter data and calculations will appear here automatically.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Data Table -->
-        <div class="bg-white rounded-lg shadow-md mt-6 overflow-hidden">
-            <div class="p-4 border-b bg-gray-50">
-                <h2 class="text-xl font-semibold text-gray-800">Saved Records</h2>
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 mt-6 overflow-hidden">
+            <div class="p-5 border-b bg-gradient-to-r from-gray-50 to-gray-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Saved Records</h2>
+                </div>
             </div>
             <div class="overflow-x-auto">
-                <table class="nba-table" id="dataTable">
-                    <thead>
+                <table class="w-full" id="dataTable">
+                    <thead class="bg-gray-50">
                         <tr>
                             ${generateTableHeaders(config.fields)}
-                            <th>Actions</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b-2 border-gray-200">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="dataTableBody">
+                    <tbody id="dataTableBody" class="divide-y divide-gray-100">
                     </tbody>
                 </table>
             </div>
-            <div id="noData" class="hidden p-8 text-center text-gray-500">
-                No data saved yet. Add your first entry above.
+            <div id="noData" class="hidden p-12 text-center">
+                <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                </svg>
+                <p class="text-gray-500 text-lg">No data saved yet</p>
+                <p class="text-gray-400 text-sm mt-1">Add your first entry using the form above</p>
             </div>
         </div>
     `;
@@ -1220,22 +1654,24 @@ function loadCriteria(criteria) {
 }
 
 /**
- * Generate form fields HTML
+ * Generate form fields HTML with improved styling
  */
 function generateFormFields(fields) {
   return fields
     .map((field) => {
       let input = "";
+      const baseClass =
+        "w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200";
 
       if (field.type === "textarea") {
         input = `<textarea name="${field.name}" id="${field.name}" 
                         ${field.required ? "required" : ""} 
-                        class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-300" 
+                        class="${baseClass} min-h-[100px] resize-y" 
                         rows="3" placeholder="${field.placeholder || ""}">${field.default || ""}</textarea>`;
       } else if (field.type === "select") {
         input = `<select name="${field.name}" id="${field.name}" 
                         ${field.required ? "required" : ""} 
-                        class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-300">
+                        class="${baseClass} cursor-pointer">
                         ${field.options.map((opt) => `<option value="${opt}">${opt}</option>`).join("")}
                     </select>`;
       } else {
@@ -1244,13 +1680,16 @@ function generateFormFields(fields) {
                         ${field.min !== undefined ? `min="${field.min}"` : ""} 
                         ${field.max !== undefined ? `max="${field.max}"` : ""} 
                         ${field.step ? `step="${field.step}"` : ""} 
-                        class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-300" 
+                        class="${baseClass}" 
                         placeholder="${field.placeholder || ""}">`;
       }
 
       return `
-            <div>
-                <label class="block text-gray-700 text-sm font-bold mb-1">${field.label}</label>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-semibold mb-2" for="${field.name}">
+                    ${field.label}
+                    ${field.required ? '<span class="text-red-500 ml-1">*</span>' : '<span class="text-gray-400 text-xs ml-1">(optional)</span>'}
+                </label>
                 ${input}
             </div>`;
     })
@@ -1258,10 +1697,15 @@ function generateFormFields(fields) {
 }
 
 /**
- * Generate table headers
+ * Generate table headers with improved styling
  */
 function generateTableHeaders(fields) {
-  return fields.map((f) => `<th>${f.label}</th>`).join("");
+  return fields
+    .map(
+      (f) =>
+        `<th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b-2 border-gray-200 bg-gray-50">${f.label}</th>`,
+    )
+    .join("");
 }
 
 /**
@@ -1270,7 +1714,7 @@ function generateTableHeaders(fields) {
 function setupCriteriaForm(criteria, config) {
   const form = document.getElementById("criteriaForm");
   if (form) {
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const formData = new FormData(form);
@@ -1291,13 +1735,38 @@ function setupCriteriaForm(criteria, config) {
         data.id = parseInt(editId);
       }
 
-      // Save data
-      const result = Storage.saveNBAData(criteria, data);
-      showMessage(result.message, result.success ? "success" : "error");
+      try {
+        // Show loading
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = "Saving...";
+        submitBtn.disabled = true;
 
-      if (result.success) {
-        clearForm();
-        loadCriteriaData(criteria, config);
+        // Save data to Supabase
+        const result = await saveNBADataToSupabase(criteria, data);
+        showMessage(result.message, result.success ? "success" : "error");
+
+        if (result.success) {
+          clearForm();
+          await loadCriteriaData(criteria, config);
+
+          // Trigger calculations if needed
+          if (config.calculations) {
+            performCalculations(config);
+          }
+        }
+
+        // Reset button
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      } catch (error) {
+        showMessage("Error saving data: " + error.message, "error");
+        console.error("Save error:", error);
+
+        // Reset button
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = "Save Data";
+        submitBtn.disabled = false;
       }
     });
 
@@ -1314,43 +1783,67 @@ function setupCriteriaForm(criteria, config) {
 }
 
 /**
- * Load criteria data into table
+ * Load criteria data from Supabase into table
  */
-function loadCriteriaData(criteria, config) {
-  const data = Storage.getNBAData(criteria);
-  const tbody = document.getElementById("dataTableBody");
-  const noData = document.getElementById("noData");
+async function loadCriteriaData(criteria, config) {
+  try {
+    const response = await fetch(
+      `backend/NBA/get_criteria_data.php?criteria=${encodeURIComponent(criteria)}`,
+    );
+    const result = await response.json();
 
-  if (data.length === 0) {
-    if (tbody) tbody.innerHTML = "";
-    if (noData) noData.classList.remove("hidden");
-    return;
-  }
+    const tbody = document.getElementById("dataTableBody");
+    const noData = document.getElementById("noData");
 
-  if (noData) noData.classList.add("hidden");
+    if (!result.success || result.data.length === 0) {
+      if (tbody) tbody.innerHTML = "";
+      if (noData) noData.classList.remove("hidden");
+      return;
+    }
 
-  if (tbody) {
-    tbody.innerHTML = data
-      .map(
-        (item) => `
-            <tr>
-                ${config.fields.map((f) => `<td>${escapeHtml(String(item[f.name] || ""))}</td>`).join("")}
-                <td>
-                    <button onclick="editRecord('${criteria}', ${item.id})" class="text-blue-600 hover:underline text-sm mr-2">Edit</button>
-                    <button onclick="deleteRecord('${criteria}', ${item.id})" class="text-red-600 hover:underline text-sm">Delete</button>
-                </td>
-            </tr>
-        `,
-      )
-      .join("");
+    if (noData) noData.classList.add("hidden");
+
+    if (tbody) {
+      tbody.innerHTML = result.data
+        .map(
+          (item) => `
+              <tr class="hover:bg-gray-50 transition-colors duration-150">
+                  ${config.fields.map((f) => `<td class="px-4 py-3 text-sm text-gray-700">${escapeHtml(String(item[f.name] || "-"))}</td>`).join("")}
+                  <td class="px-4 py-3">
+                      <div class="flex gap-2">
+                          <button onclick="editRecord('${criteria}', ${item.id})" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-100 transition-colors">
+                              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                              </svg>
+                              Edit
+                          </button>
+                          <button onclick="deleteRecord('${criteria}', ${item.id})" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 text-sm font-medium rounded-lg hover:bg-red-100 transition-colors">
+                              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                              </svg>
+                              Delete
+                          </button>
+                      </div>
+                  </td>
+              </tr>
+          `,
+        )
+        .join("");
+    }
+
+    // Store data for editing
+    window.currentCriteriaData = result.data;
+  } catch (error) {
+    console.error("Error loading criteria data:", error);
+    showMessage("Error loading data: " + error.message, "error");
   }
 }
 
 /**
- * Edit record
+ * Edit record - uses data loaded from Supabase
  */
 function editRecord(criteria, id) {
-  const data = Storage.getNBAData(criteria);
+  const data = window.currentCriteriaData || [];
   const record = data.find((item) => item.id === id);
   const config = CRITERIA_CONFIG[criteria];
 
@@ -1368,21 +1861,51 @@ function editRecord(criteria, id) {
       performCalculations(config);
     }
 
-    // Scroll to form
-    document
-      .getElementById("criteriaForm")
-      .scrollIntoView({ behavior: "smooth" });
+    // Scroll to form with visual highlight
+    const form = document.getElementById("criteriaForm");
+    form.scrollIntoView({ behavior: "smooth" });
+    form.classList.add("ring-2", "ring-blue-500", "ring-offset-2");
+    setTimeout(() => {
+      form.classList.remove("ring-2", "ring-blue-500", "ring-offset-2");
+    }, 2000);
+  } else {
+    showMessage("Could not load record for editing", "error");
   }
 }
 
 /**
- * Delete record
+ * Delete record - calls Supabase backend
  */
-function deleteRecord(criteria, id) {
-  if (confirm("Are you sure you want to delete this record?")) {
-    const result = Storage.deleteNBAData(criteria, id);
-    showMessage(result.message, result.success ? "success" : "error");
-    loadCriteriaData(criteria, CRITERIA_CONFIG[criteria]);
+async function deleteRecord(criteria, id) {
+  if (!confirm("Are you sure you want to delete this record?")) {
+    return;
+  }
+
+  try {
+    const response = await fetch("backend/NBA/delete_criteria_data.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        criteria: criteria,
+        id: id,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      showMessage("Record deleted successfully", "success");
+      await loadCriteriaData(criteria, CRITERIA_CONFIG[criteria]);
+    } else {
+      showMessage(
+        "Error deleting record: " + (result.error || result.message),
+        "error",
+      );
+    }
+  } catch (error) {
+    showMessage("Network error: " + error.message, "error");
   }
 }
 
@@ -1710,20 +2233,41 @@ function displayCalculationResults(results) {
 }
 
 /**
- * Show message
+ * Show message with improved styling
  */
 function showMessage(text, type = "success") {
   const messageDiv = document.getElementById("message");
-  messageDiv.className =
-    type === "error"
-      ? "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded mb-4"
-      : "bg-green-100 text-green-700 border border-green-400 px-4 py-3 rounded mb-4";
-  messageDiv.textContent = text;
+
+  let icon = "";
+  let className = "";
+
+  if (type === "error") {
+    className =
+      "bg-red-50 text-red-800 border-l-4 border-red-500 px-4 py-4 rounded-lg mb-4 flex items-center gap-3 shadow-sm";
+    icon = `<svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+            </svg>`;
+  } else if (type === "warning") {
+    className =
+      "bg-yellow-50 text-yellow-800 border-l-4 border-yellow-500 px-4 py-4 rounded-lg mb-4 flex items-center gap-3 shadow-sm";
+    icon = `<svg class="w-5 h-5 text-yellow-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>`;
+  } else {
+    className =
+      "bg-green-50 text-green-800 border-l-4 border-green-500 px-4 py-4 rounded-lg mb-4 flex items-center gap-3 shadow-sm";
+    icon = `<svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>`;
+  }
+
+  messageDiv.className = className;
+  messageDiv.innerHTML = `${icon}<span>${text}</span>`;
   messageDiv.classList.remove("hidden");
 
   setTimeout(() => {
     messageDiv.classList.add("hidden");
-  }, 3000);
+  }, 4000);
 }
 
 /**
@@ -1735,3 +2279,46 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
+
+// ============================================
+// SUPABASE INTEGRATION FUNCTIONS
+// ============================================
+
+/**
+ * Save NBA data to Supabase backend
+ */
+async function saveNBADataToSupabase(criteria, data) {
+  // Map criteria to appropriate save script
+  const saveEndpoint = getSaveEndpoint(criteria);
+
+  try {
+    const response = await fetch(saveEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error saving to Supabase:", error);
+    return {
+      success: false,
+      message: "Network error: " + error.message,
+    };
+  }
+}
+
+/**
+ * Get save endpoint for criteria
+ * All criteria now use the unified save_generic.php endpoint with Supabase REST API
+ */
+function getSaveEndpoint(criteria) {
+  // Use unified save endpoint with criteria parameter
+  return `backend/NBA/save_generic.php?criteria=${encodeURIComponent(criteria)}`;
+}
+
+// Note: deleteRecord, editRecord, and clearForm functions are defined earlier in this file
+// to avoid duplicate function declarations
