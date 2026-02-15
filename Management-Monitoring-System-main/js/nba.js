@@ -120,7 +120,8 @@ const CRITERIA_CONFIG = {
         name: "mappingMatrix",
         label: "PEO-Mission Mapping Matrix",
         type: "textarea",
-        placeholder: "Describe how each PEO maps to mission statements (use H/M/L or 3/2/1)...",
+        placeholder:
+          "Describe how each PEO maps to mission statements (use H/M/L or 3/2/1)...",
         required: true,
       },
       {
@@ -161,7 +162,8 @@ const CRITERIA_CONFIG = {
         name: "stakeholderFeedback",
         label: "Stakeholder Feedback Mechanism",
         type: "textarea",
-        placeholder: "How is feedback collected from stakeholders for PEO revision?",
+        placeholder:
+          "How is feedback collected from stakeholders for PEO revision?",
         required: true,
       },
       {
@@ -350,7 +352,8 @@ const CRITERIA_CONFIG = {
         name: "industryInvolvement",
         label: "Industry Involvement in Curriculum Design",
         type: "textarea",
-        placeholder: "Describe how industry experts contribute to curriculum...",
+        placeholder:
+          "Describe how industry experts contribute to curriculum...",
         required: true,
       },
       {
@@ -384,7 +387,8 @@ const CRITERIA_CONFIG = {
         name: "teachingMethodologies",
         label: "Teaching Methodologies Used",
         type: "textarea",
-        placeholder: "Chalk-board, PPT, Active Learning, Flipped Classroom, etc.",
+        placeholder:
+          "Chalk-board, PPT, Active Learning, Flipped Classroom, etc.",
         required: true,
       },
       {
@@ -1646,7 +1650,7 @@ function generateTableHeaders(fields) {
 function setupCriteriaForm(criteria, config) {
   const form = document.getElementById("criteriaForm");
   if (form) {
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const formData = new FormData(form);
@@ -1667,13 +1671,38 @@ function setupCriteriaForm(criteria, config) {
         data.id = parseInt(editId);
       }
 
-      // Save data
-      const result = Storage.saveNBAData(criteria, data);
-      showMessage(result.message, result.success ? "success" : "error");
+      try {
+        // Show loading
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = "Saving...";
+        submitBtn.disabled = true;
 
-      if (result.success) {
-        clearForm();
-        loadCriteriaData(criteria, config);
+        // Save data to Supabase
+        const result = await saveNBADataToSupabase(criteria, data);
+        showMessage(result.message, result.success ? "success" : "error");
+
+        if (result.success) {
+          clearForm();
+          await loadCriteriaData(criteria, config);
+
+          // Trigger calculations if needed
+          if (config.calculations) {
+            performCalculations(config);
+          }
+        }
+
+        // Reset button
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      } catch (error) {
+        showMessage("Error saving data: " + error.message, "error");
+        console.error("Save error:", error);
+
+        // Reset button
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = "Save Data";
+        submitBtn.disabled = false;
       }
     });
 
@@ -1690,35 +1719,47 @@ function setupCriteriaForm(criteria, config) {
 }
 
 /**
- * Load criteria data into table
+ * Load criteria data from Supabase into table
  */
-function loadCriteriaData(criteria, config) {
-  const data = Storage.getNBAData(criteria);
-  const tbody = document.getElementById("dataTableBody");
-  const noData = document.getElementById("noData");
+async function loadCriteriaData(criteria, config) {
+  try {
+    const response = await fetch(
+      `backend/NBA/get_criteria_data.php?criteria=${encodeURIComponent(criteria)}`,
+    );
+    const result = await response.json();
 
-  if (data.length === 0) {
-    if (tbody) tbody.innerHTML = "";
-    if (noData) noData.classList.remove("hidden");
-    return;
-  }
+    const tbody = document.getElementById("dataTableBody");
+    const noData = document.getElementById("noData");
 
-  if (noData) noData.classList.add("hidden");
+    if (!result.success || result.data.length === 0) {
+      if (tbody) tbody.innerHTML = "";
+      if (noData) noData.classList.remove("hidden");
+      return;
+    }
 
-  if (tbody) {
-    tbody.innerHTML = data
-      .map(
-        (item) => `
-            <tr>
-                ${config.fields.map((f) => `<td>${escapeHtml(String(item[f.name] || ""))}</td>`).join("")}
-                <td>
-                    <button onclick="editRecord('${criteria}', ${item.id})" class="text-blue-600 hover:underline text-sm mr-2">Edit</button>
-                    <button onclick="deleteRecord('${criteria}', ${item.id})" class="text-red-600 hover:underline text-sm">Delete</button>
-                </td>
-            </tr>
-        `,
-      )
-      .join("");
+    if (noData) noData.classList.add("hidden");
+
+    if (tbody) {
+      tbody.innerHTML = result.data
+        .map(
+          (item) => `
+              <tr>
+                  ${config.fields.map((f) => `<td>${escapeHtml(String(item[f.name] || ""))}</td>`).join("")}
+                  <td>
+                      <button onclick="editRecord('${criteria}', ${item.id})" class="text-blue-600 hover:underline text-sm mr-2">Edit</button>
+                      <button onclick="deleteRecord('${criteria}', ${item.id})" class="text-red-600 hover:underline text-sm">Delete</button>
+                  </td>
+              </tr>
+          `,
+        )
+        .join("");
+    }
+
+    // Store data for editing
+    window.currentCriteriaData = result.data;
+  } catch (error) {
+    console.error("Error loading criteria data:", error);
+    showMessage("Error loading data: " + error.message, "error");
   }
 }
 
@@ -2110,4 +2151,204 @@ function escapeHtml(text) {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
+}
+
+// ============================================
+// SUPABASE INTEGRATION FUNCTIONS
+// ============================================
+
+/**
+ * Save NBA data to Supabase backend
+ */
+async function saveNBADataToSupabase(criteria, data) {
+  // Map criteria to appropriate save script
+  const saveEndpoint = getSaveEndpoint(criteria);
+
+  try {
+    const response = await fetch(saveEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error saving to Supabase:", error);
+    return {
+      success: false,
+      message: "Network error: " + error.message,
+    };
+  }
+}
+
+/**
+ * Get save endpoint for criteria
+ */
+function getSaveEndpoint(criteria) {
+  // Map criteria to save script endpoints
+  const criteriaMap = {
+    // Criteria 1
+    1.1: "backend/NBA/save_11.php",
+    1.2: "backend/NBA/save_12.php",
+    1.3: "backend/NBA/save_13.php",
+    1.4: "backend/NBA/save_14.php",
+    1.5: "backend/NBA/save_15.php",
+
+    // Criteria 2
+    "2.1.1": "backend/NBA/save_211.php",
+    "2.1.2": "backend/NBA/save_212.php",
+    "2.1.3": "backend/NBA/save_213.php",
+    "2.1.4": "backend/NBA/save_214.php",
+    "2.2.1": "backend/NBA/save_221.php",
+    "2.2.2": "backend/NBA/save_222.php",
+    "2.2.3": "backend/NBA/save_223.php",
+    "2.2.4": "backend/NBA/save_224.php",
+    "2.2.5": "backend/NBA/save_225.php",
+
+    // Criteria 3
+    3.1: "backend/NBA/save_31.php",
+    "3.2.1": "backend/NBA/save_321.php",
+    "3.2.2": "backend/NBA/save_322.php",
+    "3.3.1": "backend/NBA/save_331.php",
+    "3.3.2": "backend/NBA/save_332.php",
+
+    // Criteria 4 (already exist)
+    4.1: "backend/NBA/save_41.php",
+    "4.2.1": "backend/NBA/save_421.php",
+    "4.2.2": "backend/NBA/save_422.php",
+    4.3: "backend/NBA/save_43.php",
+    4.4: "backend/NBA/save_44.php",
+    "4.5.1": "backend/NBA/save_451.php",
+    "4.5.2": "backend/NBA/save_452.php",
+    "4.5.3": "backend/NBA/save_453.php",
+
+    // Criteria 5 (already exist)
+    5.1: "backend/NBA/save_51.php",
+    5.2: "backend/NBA/save_52.php",
+    5.3: "backend/NBA/save_53.php",
+    5.4: "backend/NBA/save_54.php",
+    5.5: "backend/NBA/save_55.php",
+    5.6: "backend/NBA/save_56.php",
+    5.7: "backend/NBA/save_57.php",
+    "5.8.1": "backend/NBA/save_581.php",
+    "5.8.2": "backend/NBA/save_582.php",
+    "5.8.3": "backend/NBA/save_583.php",
+    "5.8.4": "backend/NBA/save_584.php",
+    5.9: "backend/NBA/save_59.php",
+    "5.10": "backend/NBA/save_510.php",
+
+    // Criteria 6 (already exist)
+    6.1: "backend/NBA/save_61.php",
+    6.2: "backend/NBA/save_62.php",
+    6.3: "backend/NBA/save_63.php",
+    6.4: "backend/NBA/save_64.php",
+
+    // Criteria 7 (already exist)
+    7.1: "backend/NBA/save_71.php",
+    7.2: "backend/NBA/save_72.php",
+    7.3: "backend/NBA/save_73.php",
+    7.4: "backend/NBA/save_74.php",
+
+    // Criteria 8
+    8.1: "backend/NBA/save_81_supabase.php",
+    8.2: "backend/NBA/save_82.php",
+    8.3: "backend/NBA/save_83.php",
+    "8.4.1": "backend/NBA/save_841.php",
+    "8.4.2": "backend/NBA/save_842.php",
+    "8.5.1": "backend/NBA/save_851.php",
+    "8.5.2": "backend/NBA/save_852.php",
+
+    // Criteria 9
+    9.1: "backend/NBA/save_91.php",
+    9.2: "backend/NBA/save_92.php",
+    9.3: "backend/NBA/save_93.php",
+    9.4: "backend/NBA/save_94.php",
+    9.5: "backend/NBA/save_95.php",
+    9.6: "backend/NBA/save_96.php",
+    9.7: "backend/NBA/save_97.php",
+
+    // Criteria 10
+    10.1: "backend/NBA/save_101.php",
+  };
+
+  return criteriaMap[criteria] || "backend/NBA/save_generic.php";
+}
+
+/**
+ * Delete NBA record
+ */
+async function deleteRecord(criteria, id) {
+  if (!confirm("Are you sure you want to delete this record?")) {
+    return;
+  }
+
+  try {
+    const response = await fetch("backend/NBA/delete_criteria_data.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        criteria: criteria,
+        id: id,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      showMessage("Record deleted successfully", "success");
+      const config = CRITERIA_CONFIG[criteria];
+      await loadCriteriaData(criteria, config);
+    } else {
+      showMessage("Error deleting record: " + result.error, "error");
+    }
+  } catch (error) {
+    showMessage("Network error: " + error.message, "error");
+  }
+}
+
+/**
+ * Edit record - populate form with existing data
+ */
+function editRecord(criteria, id) {
+  const data = window.currentCriteriaData;
+  if (!data) return;
+
+  const record = data.find((item) => item.id === id);
+  const config = CRITERIA_CONFIG[criteria];
+
+  if (record && config) {
+    document.getElementById("editId").value = id;
+    config.fields.forEach((field) => {
+      const input = document.getElementById(field.name);
+      if (input) {
+        input.value = record[field.name] || "";
+      }
+    });
+
+    // Trigger calculations
+    if (config.calculations) {
+      performCalculations(config);
+    }
+
+    // Scroll to form
+    document
+      .getElementById("criteriaForm")
+      .scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+/**
+ * Clear form
+ */
+function clearForm() {
+  const form = document.getElementById("criteriaForm");
+  if (form) {
+    form.reset();
+    document.getElementById("editId").value = "";
+  }
 }

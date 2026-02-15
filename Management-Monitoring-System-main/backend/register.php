@@ -47,10 +47,11 @@ if (strlen($password) < 6) {
     exit;
 }
 
-// Validate role
-$validRoles = ['HOD', 'FACULTY'];
+// Validate role and convert to lowercase
+$validRoles = ['hod', 'faculty'];
+$role = strtolower(trim($role));
 if (!in_array($role, $validRoles)) {
-    $role = 'FACULTY';
+    $role = 'faculty';
 }
 
 /**
