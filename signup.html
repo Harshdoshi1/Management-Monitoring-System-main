@@ -12,17 +12,10 @@
     <link rel="stylesheet" href="css/styles.css" />
     <style>
       .gradient-bg {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
       }
-      .input-icon {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #9ca3af;
-      }
-      .input-with-icon {
-        padding-left: 40px;
+      .form-container {
+        max-width: 480px;
       }
     </style>
   </head>
@@ -123,8 +116,9 @@
                 required
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition appearance-none bg-white cursor-pointer"
               >
-                <option value="faculty">Faculty</option>
-                <option value="hod">HOD (Head of Department)</option>
+                <option value="">Select your role</option>
+                <option value="faculty">Faculty Member</option>
+                <option value="hod">Head of Department (HOD)</option>
               </select>
               <i
                 class="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
