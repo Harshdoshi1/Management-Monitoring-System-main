@@ -1788,7 +1788,7 @@ function setupCriteriaForm(criteria, config) {
 async function loadCriteriaData(criteria, config) {
   try {
     const response = await fetch(
-      `backend/NBA/get_criteria_data.php?criteria=${encodeURIComponent(criteria)}`,
+      `api/NBA/get_criteria_data.php?criteria=${encodeURIComponent(criteria)}`,
     );
     const result = await response.json();
 
@@ -1882,7 +1882,7 @@ async function deleteRecord(criteria, id) {
   }
 
   try {
-    const response = await fetch("backend/NBA/delete_criteria_data.php", {
+    const response = await fetch("api/NBA/delete_criteria_data.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -2317,7 +2317,7 @@ async function saveNBADataToSupabase(criteria, data) {
  */
 function getSaveEndpoint(criteria) {
   // Use unified save endpoint with criteria parameter
-  return `backend/NBA/save_generic.php?criteria=${encodeURIComponent(criteria)}`;
+  return `api/NBA/save_generic.php?criteria=${encodeURIComponent(criteria)}`;
 }
 
 // Note: deleteRecord, editRecord, and clearForm functions are defined earlier in this file

@@ -3,23 +3,17 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
-    "backend/**/*.php": {
+    "api/**/*.php": {
       "runtime": "vercel-php@0.7.1"
     }
   },
-  "routes": [
-    {
-      "src": "/backend/(.*)",
-      "dest": "/backend/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
+  "rewrites": [
+    { "source": "/backend/NBA/:path*", "destination": "/api/NBA/:path*" },
+    { "source": "/backend/:path*", "destination": "/api/:path*" }
   ],
   "headers": [
     {
-      "source": "/backend/(.*)",
+      "source": "/api/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         {

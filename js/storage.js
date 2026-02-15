@@ -102,7 +102,7 @@ const Storage = {
    */
   async loginWithSupabase(email, password) {
     try {
-      const response = await fetch('backend/login.php', {
+      const response = await fetch('api/login.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -128,7 +128,7 @@ const Storage = {
   async registerWithSupabase(name, email, password, role = "faculty") {
     try {
       // Call backend register.php which handles password hashing
-      const response = await fetch('backend/register.php', {
+      const response = await fetch('api/register.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password, role: role.toLowerCase() })
