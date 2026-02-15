@@ -1,26 +1,33 @@
 {
-    "builds": [
+    "version": 2,
+    "name": "department-monitoring-system",
+    "buildCommand": null,
+    "outputDirectory": "public",
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "rewrites": [
         {
-            "src": "frontend/*.php",
-            "use": "vercel-php@0.7.1"
-        },
-        {
-            "src": "backend/**/*.php",
-            "use": "vercel-php@0.7.1"
+            "source": "/",
+            "destination": "/index.html"
         }
     ],
-    "routes": [
+    "headers": [
         {
-            "src": "/backend/(.*)",
-            "dest": "/backend/$1"
-        },
-        {
-            "src": "/frontend/(.*)",
-            "dest": "/frontend/$1"
-        },
-        {
-            "src": "/",
-            "dest": "/frontend/index.php"
+            "source": "/(.*)",
+            "headers": [
+                {
+                    "key": "X-Content-Type-Options",
+                    "value": "nosniff"
+                },
+                {
+                    "key": "X-Frame-Options",
+                    "value": "DENY"
+                },
+                {
+                    "key": "X-XSS-Protection",
+                    "value": "1; mode=block"
+                }
+            ]
         }
     ]
 }
