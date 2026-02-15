@@ -68,6 +68,7 @@ Management-Monitoring-System-main/
 ### Step 3: Access Your Site
 
 Once deployed, Vercel will provide you with a URL like:
+
 - `https://your-project-name.vercel.app`
 
 Your site is now live!
@@ -75,13 +76,16 @@ Your site is now live!
 ## How It Works
 
 ### Data Storage
+
 This application uses **localStorage** for data persistence. This means:
+
 - Data is stored in the user's browser
 - Data persists across page refreshes
 - Data is specific to each browser/device
 - No server or database required
 
 ### NBA Criteria
+
 The system supports all 10 NBA accreditation criteria:
 
 1. **Criterion 1**: Vision, Mission & PEOs
@@ -96,7 +100,9 @@ The system supports all 10 NBA accreditation criteria:
 10. **Criterion 10**: Governance & Financial Resources
 
 ### Automatic Calculations
+
 The system automatically calculates:
+
 - Enrollment Ratio
 - Success Rate (with/without backlog)
 - Mean CGPA
