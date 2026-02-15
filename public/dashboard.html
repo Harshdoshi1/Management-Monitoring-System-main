@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Department Monitoring System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+      <div
+        class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">
+            Department Monitoring System
+          </h1>
+          <p class="text-sm text-gray-600">
+            Manage Students, Faculty & NBA Criteria
+          </p>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-gray-700"
+            >Welcome, <span id="userEmail" class="font-semibold"></span
+          ></span>
+          <button
+            onclick="logout()"
+            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+      <!-- Tabs -->
+      <div class="flex gap-4 mb-6">
+        <button
+          onclick="showTab('students')"
+          id="tab-students"
+          class="tab-btn px-6 py-2 rounded-lg font-semibold transition"
+        >
+          Students
+        </button>
+        <button
+          onclick="showTab('faculty')"
+          id="tab-faculty"
+          class="tab-btn px-6 py-2 rounded-lg font-semibold transition"
+        >
+          Faculty
+        </button>
+        <button
+          onclick="showTab('nba')"
+          id="tab-nba"
+          class="tab-btn px-6 py-2 rounded-lg font-semibold transition"
+        >
+          NBA Criteria
+        </button>
+      </div>
+
+      <!-- Message Alert -->
+      <div id="message" class="hidden border px-4 py-3 rounded mb-4"></div>
+
+      <!-- ==================== STUDENTS TAB ==================== -->
+      <div id="content-students" class="tab-content hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <!-- Add Student Form -->
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">
+              Add Student
+            </h2>
+            <form id="addStudentForm" class="space-y-3">
+              <div class="grid grid-cols-3 gap-2">
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="First Name"
+                  required
+                  class="border p-2 rounded focus:ring-2 focus:ring-blue-300"
+                />
+                <input
+                  type="text"
+                  name="middleName"
+                  placeholder="Middle Name"
+                  class="border p-2 rounded focus:ring-2 focus:ring-blue-300"
+                />
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                  required
+                  class="border p-2 rounded focus:ring-2 focus:ring-blue-300"
+                />
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  name="grNo"
+                  placeholder="GR No"
+                  required
+                  class="border p-2 rounded focus:ring-2 focus:ring-blue-300"
+                />
+                <input
+                  type="text"
+                  name="enrollmentNo"
+                  placeholder="Enrollment No"
+                  required
+                  class="border p-2 rounded focus:ring-2 focus:ring-blue-300"
+                />
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  name="class"
+                  placeholder="Class"
+                  required
+                  class="border p-2 rounded focus:ring-2 focus:ring-blue-300"
+                />
+                <input
+                  type="number"
+                  name="semester"
+                  placeholder="Semester"
+                  required
+                  min="1"
+                  max="8"
+                  class="border p-2 rounded focus:ring-2 focus:ring-blue-300"
+                />
+              </div>
+              <input
+                type="text"
+                name="batch"
+                placeholder="Batch (e.g., A, B)"
+                required
+                class="border p-2 rounded w-full focus:ring-2 focus:ring-blue-300"
+              />
+              <input
+                type="text"
+                name="academicYear"
+                placeholder="Academic Year (e.g., 2023-24)"
+                required
+                class="border p-2 rounded w-full focus:ring-2 focus:ring-blue-300"
+              />
+              <button
+                type="submit"
+                class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold"
+              >
+                Add Student
+              </button>
+            </form>
+          </div>
+
+          <!-- Search Students -->
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">
+              Search Students
+            </h2>
+            <div class="mb-4">
+              <input
+                type="text"
+                id="studentSearch"
+                placeholder="Search by name, GR No, or Enrollment No..."
+                class="border p-2 rounded w-full focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+            <div class="flex gap-2 mb-4">
+              <select id="studentBatchFilter" class="border p-2 rounded flex-1">
+                <option value="">All Batches</option>
+              </select>
+              <select id="studentYearFilter" class="border p-2 rounded flex-1">
+                <option value="">All Years</option>
+              </select>
+            </div>
+            <div class="text-sm text-gray-600">
+              <p>
+                Total Students:
+                <span id="totalStudents" class="font-semibold">0</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Students Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Name
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    GR No
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Enrollment No
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Class
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Semester
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Batch
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Year
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="studentsTableBody"></tbody>
+            </table>
+          </div>
+          <div id="noStudents" class="hidden p-8 text-center text-gray-500">
+            No students found. Add your first student above.
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== FACULTY TAB ==================== -->
+      <div id="content-faculty" class="tab-content hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <!-- Add Faculty Form -->
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">
+              Add Faculty
+            </h2>
+            <form id="addFacultyForm" class="space-y-3">
+              <div class="grid grid-cols-3 gap-2">
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="First Name"
+                  required
+                  class="border p-2 rounded focus:ring-2 focus:ring-blue-300"
+                />
+                <input
+                  type="text"
+                  name="middleName"
+                  placeholder="Middle Name"
+                  class="border p-2 rounded focus:ring-2 focus:ring-blue-300"
+                />
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                  required
+                  class="border p-2 rounded focus:ring-2 focus:ring-blue-300"
+                />
+              </div>
+              <input
+                type="text"
+                name="facultyId"
+                placeholder="Faculty ID"
+                required
+                class="border p-2 rounded w-full focus:ring-2 focus:ring-blue-300"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+                class="border p-2 rounded w-full focus:ring-2 focus:ring-blue-300"
+              />
+              <select
+                name="department"
+                required
+                class="border p-2 rounded w-full focus:ring-2 focus:ring-blue-300"
+              >
+                <option value="">Select Department</option>
+                <option value="Computer Engineering">
+                  Computer Engineering
+                </option>
+                <option value="Information Technology">
+                  Information Technology
+                </option>
+                <option value="Electronics">Electronics</option>
+                <option value="Mechanical">Mechanical</option>
+                <option value="Civil">Civil</option>
+                <option value="Electrical">Electrical</option>
+              </select>
+              <select
+                name="designation"
+                required
+                class="border p-2 rounded w-full focus:ring-2 focus:ring-blue-300"
+              >
+                <option value="">Select Designation</option>
+                <option value="Professor">Professor</option>
+                <option value="Associate Professor">Associate Professor</option>
+                <option value="Assistant Professor">Assistant Professor</option>
+                <option value="Lecturer">Lecturer</option>
+              </select>
+              <select
+                name="qualification"
+                required
+                class="border p-2 rounded w-full focus:ring-2 focus:ring-blue-300"
+              >
+                <option value="">Select Qualification</option>
+                <option value="Ph.D">Ph.D</option>
+                <option value="M.Tech">M.Tech</option>
+                <option value="M.E">M.E</option>
+                <option value="MBA">MBA</option>
+                <option value="B.Tech">B.Tech</option>
+              </select>
+              <button
+                type="submit"
+                class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold"
+              >
+                Add Faculty
+              </button>
+            </form>
+          </div>
+
+          <!-- Search Faculty -->
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">
+              Search Faculty
+            </h2>
+            <div class="mb-4">
+              <input
+                type="text"
+                id="facultySearch"
+                placeholder="Search by name, ID, or department..."
+                class="border p-2 rounded w-full focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+            <div class="mb-4">
+              <select id="facultyDeptFilter" class="border p-2 rounded w-full">
+                <option value="">All Departments</option>
+              </select>
+            </div>
+            <div class="text-sm text-gray-600">
+              <p>
+                Total Faculty:
+                <span id="totalFaculty" class="font-semibold">0</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Faculty Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Name
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Faculty ID
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Email
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Department
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Designation
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Qualification
+                  </th>
+                  <th
+                    class="px-4 py-3 text-left text-sm font-semibold text-gray-600"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="facultyTableBody"></tbody>
+            </table>
+          </div>
+          <div id="noFaculty" class="hidden p-8 text-center text-gray-500">
+            No faculty found. Add your first faculty member above.
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== NBA TAB ==================== -->
+      <div id="content-nba" class="tab-content hidden">
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+          <h2 class="text-xl font-semibold mb-4 text-gray-800">
+            NBA Accreditation Criteria
+          </h2>
+          <p class="text-gray-600 mb-4">
+            Select a criterion to enter and manage data. All calculations are
+            performed automatically.
+          </p>
+        </div>
+
+        <!-- NBA Criteria Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Criterion 1: Vision, Mission & PEOs -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500"
+          >
+            <h3 class="font-bold text-lg text-gray-800 mb-2">Criterion 1</h3>
+            <p class="text-gray-600 text-sm mb-4">
+              Vision, Mission & Program Educational Objectives
+            </p>
+            <div class="space-y-2">
+              <a
+                href="nba.html?criteria=1.1"
+                class="block text-blue-600 hover:underline text-sm"
+                >1.1 Vision & Mission</a
+              >
+              <a
+                href="nba.html?criteria=1.2"
+                class="block text-blue-600 hover:underline text-sm"
+                >1.2 Program Educational Objectives</a
+              >
+              <a
+                href="nba.html?criteria=1.3"
+                class="block text-blue-600 hover:underline text-sm"
+                >1.3 PEO to Mission Mapping</a
+              >
+              <a
+                href="nba.html?criteria=1.4"
+                class="block text-blue-600 hover:underline text-sm"
+                >1.4 PEO Review Process</a
+              >
+              <a
+                href="nba.html?criteria=1.5"
+                class="block text-blue-600 hover:underline text-sm"
+                >1.5 PEO Consistency</a
+              >
+            </div>
+          </div>
+
+          <!-- Criterion 2: Program Curriculum -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500"
+          >
+            <h3 class="font-bold text-lg text-gray-800 mb-2">Criterion 2</h3>
+            <p class="text-gray-600 text-sm mb-4">
+              Program Curriculum and Teaching-Learning Processes
+            </p>
+            <div class="space-y-2">
+              <a
+                href="nba.html?criteria=2.1"
+                class="block text-blue-600 hover:underline text-sm"
+                >2.1 Program Curriculum</a
+              >
+              <a
+                href="nba.html?criteria=2.2"
+                class="block text-blue-600 hover:underline text-sm"
+                >2.2 Teaching-Learning Processes</a
+              >
+            </div>
+          </div>
+
+          <!-- Criterion 3: Course Outcomes -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500"
+          >
+            <h3 class="font-bold text-lg text-gray-800 mb-2">Criterion 3</h3>
+            <p class="text-gray-600 text-sm mb-4">
+              Course Outcomes and Program Outcomes
+            </p>
+            <div class="space-y-2">
+              <a
+                href="nba.html?criteria=3.1"
+                class="block text-blue-600 hover:underline text-sm"
+                >3.1 Course Outcomes</a
+              >
+              <a
+                href="nba.html?criteria=3.2"
+                class="block text-blue-600 hover:underline text-sm"
+                >3.2 CO-PO Attainment</a
+              >
+              <a
+                href="nba.html?criteria=3.3"
+                class="block text-blue-600 hover:underline text-sm"
+                >3.3 PO/PSO Attainment</a
+              >
+            </div>
+          </div>
+
+          <!-- Criterion 4: Students' Performance -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500"
+          >
+            <h3 class="font-bold text-lg text-gray-800 mb-2">Criterion 4</h3>
+            <p class="text-gray-600 text-sm mb-4">Students' Performance</p>
+            <div class="space-y-2">
+              <a
+                href="nba.html?criteria=4.1"
+                class="block text-blue-600 hover:underline text-sm"
+                >4.1 Enrollment Ratio</a
+              >
+              <a
+                href="nba.html?criteria=4.2"
+                class="block text-blue-600 hover:underline text-sm"
+                >4.2 Success Rate</a
+              >
+              <a
+                href="nba.html?criteria=4.3"
+                class="block text-blue-600 hover:underline text-sm"
+                >4.3 Academic Performance</a
+              >
+              <a
+                href="nba.html?criteria=4.4"
+                class="block text-blue-600 hover:underline text-sm"
+                >4.4 Placement & Higher Studies</a
+              >
+              <a
+                href="nba.html?criteria=4.5"
+                class="block text-blue-600 hover:underline text-sm"
+                >4.5 Professional Activities</a
+              >
+            </div>
+          </div>
+
+          <!-- Criterion 5: Faculty Information -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500"
+          >
+            <h3 class="font-bold text-lg text-gray-800 mb-2">Criterion 5</h3>
+            <p class="text-gray-600 text-sm mb-4">
+              Faculty Information and Contributions
+            </p>
+            <div class="space-y-2">
+              <a
+                href="nba.html?criteria=5.1"
+                class="block text-blue-600 hover:underline text-sm"
+                >5.1 Student-Faculty Ratio</a
+              >
+              <a
+                href="nba.html?criteria=5.2"
+                class="block text-blue-600 hover:underline text-sm"
+                >5.2 Faculty Cadre Ratio</a
+              >
+              <a
+                href="nba.html?criteria=5.3"
+                class="block text-blue-600 hover:underline text-sm"
+                >5.3 Faculty Qualifications</a
+              >
+            </div>
+          </div>
+
+          <!-- Criterion 6: Facilities & Support -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-indigo-500"
+          >
+            <h3 class="font-bold text-lg text-gray-800 mb-2">Criterion 6</h3>
+            <p class="text-gray-600 text-sm mb-4">
+              Facilities and Technical Support
+            </p>
+            <div class="space-y-2">
+              <a
+                href="nba.html?criteria=6.1"
+                class="block text-blue-600 hover:underline text-sm"
+                >6.1 Adequate Classrooms</a
+              >
+              <a
+                href="nba.html?criteria=6.2"
+                class="block text-blue-600 hover:underline text-sm"
+                >6.2 Laboratory Facilities</a
+              >
+              <a
+                href="nba.html?criteria=6.3"
+                class="block text-blue-600 hover:underline text-sm"
+                >6.3 Computing Facilities</a
+              >
+              <a
+                href="nba.html?criteria=6.4"
+                class="block text-blue-600 hover:underline text-sm"
+                >6.4 Library Resources</a
+              >
+            </div>
+          </div>
+
+          <!-- Criterion 7: Continuous Improvement -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-pink-500"
+          >
+            <h3 class="font-bold text-lg text-gray-800 mb-2">Criterion 7</h3>
+            <p class="text-gray-600 text-sm mb-4">Continuous Improvement</p>
+            <div class="space-y-2">
+              <a
+                href="nba.html?criteria=7.1"
+                class="block text-blue-600 hover:underline text-sm"
+                >7.1 Quality Improvement</a
+              >
+              <a
+                href="nba.html?criteria=7.2"
+                class="block text-blue-600 hover:underline text-sm"
+                >7.2 Actions on Assessment</a
+              >
+              <a
+                href="nba.html?criteria=7.3"
+                class="block text-blue-600 hover:underline text-sm"
+                >7.3 Stakeholder Feedback</a
+              >
+              <a
+                href="nba.html?criteria=7.4"
+                class="block text-blue-600 hover:underline text-sm"
+                >7.4 Academic Audit</a
+              >
+            </div>
+          </div>
+
+          <!-- Criterion 8: First Year Academics -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500"
+          >
+            <h3 class="font-bold text-lg text-gray-800 mb-2">Criterion 8</h3>
+            <p class="text-gray-600 text-sm mb-4">First Year Academics</p>
+            <div class="space-y-2">
+              <a
+                href="nba.html?criteria=8.1"
+                class="block text-blue-600 hover:underline text-sm"
+                >8.1 Curriculum</a
+              >
+              <a
+                href="nba.html?criteria=8.2"
+                class="block text-blue-600 hover:underline text-sm"
+                >8.2 Student Performance</a
+              >
+              <a
+                href="nba.html?criteria=8.3"
+                class="block text-blue-600 hover:underline text-sm"
+                >8.3 Academic Support</a
+              >
+              <a
+                href="nba.html?criteria=8.4"
+                class="block text-blue-600 hover:underline text-sm"
+                >8.4 Faculty</a
+              >
+              <a
+                href="nba.html?criteria=8.5"
+                class="block text-blue-600 hover:underline text-sm"
+                >8.5 Facilities</a
+              >
+            </div>
+          </div>
+
+          <!-- Criterion 9: Student Support -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-500"
+          >
+            <h3 class="font-bold text-lg text-gray-800 mb-2">Criterion 9</h3>
+            <p class="text-gray-600 text-sm mb-4">Student Support Systems</p>
+            <div class="space-y-2">
+              <a
+                href="nba.html?criteria=9.1"
+                class="block text-blue-600 hover:underline text-sm"
+                >9.1 Mentoring</a
+              >
+              <a
+                href="nba.html?criteria=9.2"
+                class="block text-blue-600 hover:underline text-sm"
+                >9.2 Career Counseling</a
+              >
+              <a
+                href="nba.html?criteria=9.3"
+                class="block text-blue-600 hover:underline text-sm"
+                >9.3 Co-curricular Activities</a
+              >
+              <a
+                href="nba.html?criteria=9.4"
+                class="block text-blue-600 hover:underline text-sm"
+                >9.4 Grievance Redressal</a
+              >
+            </div>
+          </div>
+
+          <!-- Criterion 10: Governance -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border-l-4 border-gray-500"
+          >
+            <h3 class="font-bold text-lg text-gray-800 mb-2">Criterion 10</h3>
+            <p class="text-gray-600 text-sm mb-4">
+              Governance, Institutional Support & Financial Resources
+            </p>
+            <div class="space-y-2">
+              <a
+                href="nba.html?criteria=10.1"
+                class="block text-blue-600 hover:underline text-sm"
+                >10.1 Institutional Governance</a
+              >
+              <a
+                href="nba.html?criteria=10.2"
+                class="block text-blue-600 hover:underline text-sm"
+                >10.2 Administrative Support</a
+              >
+              <a
+                href="nba.html?criteria=10.3"
+                class="block text-blue-600 hover:underline text-sm"
+                >10.3 Financial Resources</a
+              >
+              <a
+                href="nba.html?criteria=10.4"
+                class="block text-blue-600 hover:underline text-sm"
+                >10.4 Budget Utilization</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="js/storage.js"></script>
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>
