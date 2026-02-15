@@ -4,48 +4,49 @@
  */
 
 // Supabase Configuration
-const SUPABASE_URL = 'https://ijdeeyylabqrsgdebliz.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqZGVleXlsYWJxcnNnZGVibGl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MTcyNjAsImV4cCI6MjA4NjM5MzI2MH0.UbzkskQuiP92ZEXSnJFibWc-mJvzMEs2L-H9xeQjAQY';
+const SUPABASE_URL = "https://ijdeeyylabqrsgdebliz.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqZGVleXlsYWJxcnNnZGVibGl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MTcyNjAsImV4cCI6MjA4NjM5MzI2MH0.UbzkskQuiP92ZEXSnJFibWc-mJvzMEs2L-H9xeQjAQY";
 
 /**
  * Make Supabase REST API request
  */
-async function supabaseRequest(endpoint, method = 'GET', data = null) {
-    const url = SUPABASE_URL + endpoint;
-    
-    const headers = {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
+async function supabaseRequest(endpoint, method = "GET", data = null) {
+  const url = SUPABASE_URL + endpoint;
+
+  const headers = {
+    apikey: SUPABASE_ANON_KEY,
+    Authorization: "Bearer " + SUPABASE_ANON_KEY,
+    "Content-Type": "application/json",
+    Prefer: "return=representation",
+  };
+
+  const options = {
+    method: method,
+    headers: headers,
+  };
+
+  if (data && (method === "POST" || method === "PUT" || method === "PATCH")) {
+    options.body = JSON.stringify(data);
+  }
+
+  try {
+    const response = await fetch(url, options);
+    const responseData = await response.json();
+    return {
+      status: response.status,
+      data: responseData,
+      ok: response.ok,
     };
-    
-    const options = {
-        method: method,
-        headers: headers
+  } catch (error) {
+    console.error("Supabase request error:", error);
+    return {
+      status: 500,
+      data: null,
+      error: error.message,
+      ok: false,
     };
-    
-    if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
-        options.body = JSON.stringify(data);
-    }
-    
-    try {
-        const response = await fetch(url, options);
-        const responseData = await response.json();
-        return {
-            status: response.status,
-            data: responseData,
-            ok: response.ok
-        };
-    } catch (error) {
-        console.error('Supabase request error:', error);
-        return {
-            status: 500,
-            data: null,
-            error: error.message,
-            ok: false
-        };
-    }
+  }
 }
 
 const Storage = {
@@ -103,87 +104,105 @@ const Storage = {
     try {
       // Find user by email
       const response = await supabaseRequest(
-        '/rest/v1/users?email=eq.' + encodeURIComponent(email) + '&select=id,name,email,password_hash,roles',
-        'GET'
+        "/rest/v1/users?email=eq." +
+          encodeURIComponent(email) +
+          "&select=id,name,email,password_hash,roles",
+        "GET",
       );
-      
+
       if (!response.ok || !response.data || response.data.length === 0) {
-        return { success: false, message: 'Invalid email or password' };
+        return { success: false, message: "Invalid email or password" };
       }
-      
+
       const user = response.data[0];
-      
+
       // For demo: accept plain text password comparison
       // In production, you'd need a server-side endpoint for password verification
       // Since bcrypt can't run in browser, we'll check against password_hash as plain text for demo
       // This is a limitation - real auth should use Supabase Auth
-      
+
       // Store user in localStorage
       const userData = {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: Array.isArray(user.roles) ? user.roles[0] : user.roles
+        role: Array.isArray(user.roles) ? user.roles[0] : user.roles,
       };
-      
+
       localStorage.setItem(this.KEYS.CURRENT_USER, JSON.stringify(userData));
-      
-      return { 
-        success: true, 
-        message: 'Login successful!',
-        user: userData
+
+      return {
+        success: true,
+        message: "Login successful!",
+        user: userData,
       };
     } catch (error) {
-      console.error('Login error:', error);
-      return { success: false, message: 'Login failed. Please try again.' };
+      console.error("Login error:", error);
+      return { success: false, message: "Login failed. Please try again." };
     }
   },
 
   /**
    * Register new user via Supabase
    */
-  async registerWithSupabase(name, email, password, role = 'FACULTY') {
+  async registerWithSupabase(name, email, password, role = "FACULTY") {
     try {
       // Check if email already exists
       const checkResponse = await supabaseRequest(
-        '/rest/v1/users?email=eq.' + encodeURIComponent(email) + '&select=id',
-        'GET'
+        "/rest/v1/users?email=eq." + encodeURIComponent(email) + "&select=id",
+        "GET",
       );
-      
-      if (checkResponse.ok && checkResponse.data && checkResponse.data.length > 0) {
-        return { success: false, message: 'Email already registered' };
+
+      if (
+        checkResponse.ok &&
+        checkResponse.data &&
+        checkResponse.data.length > 0
+      ) {
+        return { success: false, message: "Email already registered" };
       }
-      
+
       // Insert new user
       const userData = {
         name: name,
         email: email,
         password_hash: password, // Store as plain text for demo (Supabase Auth should be used for production)
         roles: [role],
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
-      
-      const insertResponse = await supabaseRequest('/rest/v1/users', 'POST', userData);
-      
+
+      const insertResponse = await supabaseRequest(
+        "/rest/v1/users",
+        "POST",
+        userData,
+      );
+
       if (insertResponse.ok) {
-        const newUser = Array.isArray(insertResponse.data) ? insertResponse.data[0] : insertResponse.data;
+        const newUser = Array.isArray(insertResponse.data)
+          ? insertResponse.data[0]
+          : insertResponse.data;
         return {
           success: true,
-          message: 'Registration successful',
+          message: "Registration successful",
           user: {
             id: newUser?.id,
             name: name,
             email: email,
-            role: role
-          }
+            role: role,
+          },
         };
       } else {
-        console.error('Registration error:', insertResponse);
-        return { success: false, message: 'Registration failed. Please try again.' };
+        console.error("Registration error:", insertResponse);
+        return {
+          success: false,
+          message: "Registration failed. Please try again.",
+        };
       }
     } catch (error) {
-      console.error('Registration error:', error);
-      return { success: false, message: 'Registration failed. Please try again.' };
+      console.error("Registration error:", error);
+      return {
+        success: false,
+        message: "Registration failed. Please try again.",
+      };
     }
   },
 
@@ -208,13 +227,16 @@ const Storage = {
    */
   async getStudentsFromSupabase() {
     try {
-      const response = await supabaseRequest('/rest/v1/students?order=created_at.desc&limit=100', 'GET');
+      const response = await supabaseRequest(
+        "/rest/v1/students?order=created_at.desc&limit=100",
+        "GET",
+      );
       if (response.ok && response.data) {
         localStorage.setItem(this.KEYS.STUDENTS, JSON.stringify(response.data));
         return response.data;
       }
     } catch (error) {
-      console.error('Failed to fetch students:', error);
+      console.error("Failed to fetch students:", error);
     }
     return this.getStudents();
   },
@@ -226,30 +248,43 @@ const Storage = {
     try {
       const studentData = {
         enrollment_number: student.enrollmentNo || student.enrollment_number,
-        student_name: (student.firstName || '') + ' ' + (student.lastName || ''),
+        student_name:
+          (student.firstName || "") + " " + (student.lastName || ""),
         batch: student.batch,
         academic_year: student.academicYear || student.academic_year,
-        year_of_study: parseInt(student.yearOfStudy || student.year_of_study || 1),
+        year_of_study: parseInt(
+          student.yearOfStudy || student.year_of_study || 1,
+        ),
         semester: parseInt(student.semester || 1),
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
-      
-      const response = await supabaseRequest('/rest/v1/students', 'POST', studentData);
-      
+
+      const response = await supabaseRequest(
+        "/rest/v1/students",
+        "POST",
+        studentData,
+      );
+
       if (response.ok) {
         // Also add to localStorage
         const students = this.getStudents();
-        const newStudent = Array.isArray(response.data) ? response.data[0] : response.data;
+        const newStudent = Array.isArray(response.data)
+          ? response.data[0]
+          : response.data;
         students.push(newStudent);
         localStorage.setItem(this.KEYS.STUDENTS, JSON.stringify(students));
-        
-        return { success: true, message: 'Student added successfully!', student: newStudent };
+
+        return {
+          success: true,
+          message: "Student added successfully!",
+          student: newStudent,
+        };
       } else {
-        return { success: false, message: 'Failed to add student' };
+        return { success: false, message: "Failed to add student" };
       }
     } catch (error) {
-      console.error('Add student error:', error);
-      return { success: false, message: 'Failed to add student' };
+      console.error("Add student error:", error);
+      return { success: false, message: "Failed to add student" };
     }
   },
 
@@ -262,10 +297,10 @@ const Storage = {
     student.createdAt = new Date().toISOString();
     students.push(student);
     localStorage.setItem(this.KEYS.STUDENTS, JSON.stringify(students));
-    
+
     // Also try to save to Supabase (async, non-blocking)
     this.addStudentToSupabase(student).catch(console.error);
-    
+
     return { success: true, message: "Student added successfully!", student };
   },
 
@@ -307,7 +342,8 @@ const Storage = {
           (s.student_name && s.student_name.toLowerCase().includes(query)) ||
           (s.grNo && s.grNo.toLowerCase().includes(query)) ||
           (s.enrollmentNo && s.enrollmentNo.toLowerCase().includes(query)) ||
-          (s.enrollment_number && s.enrollment_number.toLowerCase().includes(query))
+          (s.enrollment_number &&
+            s.enrollment_number.toLowerCase().includes(query)),
       );
     }
 
@@ -316,7 +352,9 @@ const Storage = {
     }
     if (filters.academicYear) {
       students = students.filter(
-        (s) => (s.academicYear === filters.academicYear || s.academic_year === filters.academicYear)
+        (s) =>
+          s.academicYear === filters.academicYear ||
+          s.academic_year === filters.academicYear,
       );
     }
 
@@ -380,13 +418,13 @@ const Storage = {
           (f.firstName && f.firstName.toLowerCase().includes(query)) ||
           (f.lastName && f.lastName.toLowerCase().includes(query)) ||
           (f.facultyId && f.facultyId.toLowerCase().includes(query)) ||
-          (f.department && f.department.toLowerCase().includes(query))
+          (f.department && f.department.toLowerCase().includes(query)),
       );
     }
 
     if (filters.department) {
       facultyList = facultyList.filter(
-        (f) => f.department === filters.department
+        (f) => f.department === filters.department,
       );
     }
 
@@ -399,7 +437,9 @@ const Storage = {
    * Get NBA data for specific criteria (from localStorage or Supabase)
    */
   getNBAData(criteria) {
-    const allData = JSON.parse(localStorage.getItem(this.KEYS.NBA_DATA) || "{}");
+    const allData = JSON.parse(
+      localStorage.getItem(this.KEYS.NBA_DATA) || "{}",
+    );
     return allData[criteria] || [];
   },
 
@@ -409,26 +449,30 @@ const Storage = {
   async getNBADataFromSupabase(criteria) {
     try {
       const response = await supabaseRequest(
-        '/rest/v1/nba_data?criteria=eq.' + encodeURIComponent(criteria) + '&order=created_at.desc',
-        'GET'
+        "/rest/v1/nba_data?criteria=eq." +
+          encodeURIComponent(criteria) +
+          "&order=created_at.desc",
+        "GET",
       );
-      
+
       if (response.ok && response.data) {
-        const parsedData = response.data.map(item => ({
-          ...JSON.parse(item.data || '{}'),
+        const parsedData = response.data.map((item) => ({
+          ...JSON.parse(item.data || "{}"),
           id: item.id,
-          createdAt: item.created_at
+          createdAt: item.created_at,
         }));
-        
+
         // Update localStorage cache
-        const allData = JSON.parse(localStorage.getItem(this.KEYS.NBA_DATA) || "{}");
+        const allData = JSON.parse(
+          localStorage.getItem(this.KEYS.NBA_DATA) || "{}",
+        );
         allData[criteria] = parsedData;
         localStorage.setItem(this.KEYS.NBA_DATA, JSON.stringify(allData));
-        
+
         return parsedData;
       }
     } catch (error) {
-      console.error('Failed to fetch NBA data:', error);
+      console.error("Failed to fetch NBA data:", error);
     }
     return this.getNBAData(criteria);
   },
@@ -437,10 +481,12 @@ const Storage = {
    * Save NBA data for specific criteria
    */
   saveNBAData(criteria, data) {
-    const allData = JSON.parse(localStorage.getItem(this.KEYS.NBA_DATA) || "{}");
+    const allData = JSON.parse(
+      localStorage.getItem(this.KEYS.NBA_DATA) || "{}",
+    );
 
     // Check if editing existing or new entry
-    if (data.id && typeof data.id === 'number') {
+    if (data.id && typeof data.id === "number") {
       // Update existing in localStorage
       const index = allData[criteria]?.findIndex((item) => item.id === data.id);
       if (index !== -1) {
@@ -457,10 +503,10 @@ const Storage = {
     }
 
     localStorage.setItem(this.KEYS.NBA_DATA, JSON.stringify(allData));
-    
+
     // Also save to Supabase (async, non-blocking)
     this.saveNBADataToSupabase(criteria, data).catch(console.error);
-    
+
     return { success: true, message: "Data saved successfully!", data };
   },
 
@@ -473,13 +519,17 @@ const Storage = {
         criteria: criteria,
         data: JSON.stringify(data),
         academic_year: data.academicYear || new Date().getFullYear().toString(),
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
-      
-      const response = await supabaseRequest('/rest/v1/nba_data', 'POST', nbaData);
+
+      const response = await supabaseRequest(
+        "/rest/v1/nba_data",
+        "POST",
+        nbaData,
+      );
       return { success: response.ok, data: response.data };
     } catch (error) {
-      console.error('Failed to save to Supabase:', error);
+      console.error("Failed to save to Supabase:", error);
       return { success: false, error: error.message };
     }
   },
@@ -488,7 +538,9 @@ const Storage = {
    * Delete NBA data entry
    */
   deleteNBAData(criteria, id) {
-    const allData = JSON.parse(localStorage.getItem(this.KEYS.NBA_DATA) || "{}");
+    const allData = JSON.parse(
+      localStorage.getItem(this.KEYS.NBA_DATA) || "{}",
+    );
     if (allData[criteria]) {
       allData[criteria] = allData[criteria].filter((item) => item.id !== id);
       localStorage.setItem(this.KEYS.NBA_DATA, JSON.stringify(allData));
@@ -518,7 +570,11 @@ const Storage = {
    */
   getUniqueAcademicYears() {
     const students = this.getStudents();
-    return [...new Set(students.map((s) => s.academicYear || s.academic_year).filter(Boolean))]
+    return [
+      ...new Set(
+        students.map((s) => s.academicYear || s.academic_year).filter(Boolean),
+      ),
+    ]
       .sort()
       .reverse();
   },
