@@ -1,11 +1,17 @@
 /**
  * NBA Criteria JavaScript - Handles all NBA criteria forms and calculations
+ * Redesigned per NBA SAR Format for Tier-II Engineering Programs
  */
 
 // Criteria definitions
 const CRITERIA_CONFIG = {
+  // ============================================
+  // CRITERION 1: Vision, Mission and Program Educational Objectives (PEOs)
+  // Max Marks: 30 (all INFO fields)
+  // ============================================
   1.1: {
-    title: "Vision & Mission (Criterion 1.1)",
+    title: "Vision & Mission Statement (Criterion 1.1)",
+    maxMarks: 5,
     fields: [
       {
         name: "academicYear",
@@ -15,21 +21,45 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "vision",
-        label: "Vision Statement",
+        name: "instituteVision",
+        label: "Institute Vision Statement",
         type: "textarea",
+        placeholder: "Describe the institute's vision...",
         required: true,
       },
       {
-        name: "mission",
-        label: "Mission Statement",
+        name: "instituteMission",
+        label: "Institute Mission Statement",
         type: "textarea",
+        placeholder: "Describe the institute's mission...",
+        required: true,
+      },
+      {
+        name: "departmentVision",
+        label: "Department Vision Statement",
+        type: "textarea",
+        placeholder: "Describe the department's vision...",
+        required: true,
+      },
+      {
+        name: "departmentMission",
+        label: "Department Mission Statement",
+        type: "textarea",
+        placeholder: "Describe the department's mission...",
+        required: true,
+      },
+      {
+        name: "disseminationProcess",
+        label: "Dissemination Process",
+        type: "textarea",
+        placeholder: "How are vision and mission communicated to stakeholders?",
         required: true,
       },
     ],
   },
   1.2: {
-    title: "Program Educational Objectives (Criterion 1.2)",
+    title: "Program Educational Objectives (PEOs) (Criterion 1.2)",
+    maxMarks: 10,
     fields: [
       {
         name: "academicYear",
@@ -38,17 +68,46 @@ const CRITERIA_CONFIG = {
         placeholder: "2023-24",
         required: true,
       },
-      { name: "peoTitle", label: "PEO Title", type: "text", required: true },
       {
-        name: "peoStatement",
-        label: "PEO Statement",
+        name: "peo1",
+        label: "PEO 1",
         type: "textarea",
+        placeholder: "Program Educational Objective 1...",
+        required: true,
+      },
+      {
+        name: "peo2",
+        label: "PEO 2",
+        type: "textarea",
+        placeholder: "Program Educational Objective 2...",
+        required: true,
+      },
+      {
+        name: "peo3",
+        label: "PEO 3",
+        type: "textarea",
+        placeholder: "Program Educational Objective 3...",
+        required: true,
+      },
+      {
+        name: "peo4",
+        label: "PEO 4 (Optional)",
+        type: "textarea",
+        placeholder: "Program Educational Objective 4...",
+        required: false,
+      },
+      {
+        name: "stakeholdersInvolved",
+        label: "Stakeholders Involved in PEO Definition",
+        type: "textarea",
+        placeholder: "Faculty, Industry, Alumni, Parents, Students...",
         required: true,
       },
     ],
   },
   1.3: {
-    title: "PEO to Mission Mapping (Criterion 1.3)",
+    title: "PEO-Mission Mapping (Criterion 1.3)",
+    maxMarks: 5,
     fields: [
       {
         name: "academicYear",
@@ -58,15 +117,24 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "process",
-        label: "Mapping Process Description",
+        name: "mappingMatrix",
+        label: "PEO-Mission Mapping Matrix",
         type: "textarea",
+        placeholder: "Describe how each PEO maps to mission statements (use H/M/L or 3/2/1)...",
+        required: true,
+      },
+      {
+        name: "justification",
+        label: "Justification for Mapping",
+        type: "textarea",
+        placeholder: "Explain the rationale behind each mapping...",
         required: true,
       },
     ],
   },
   1.4: {
-    title: "PEO Review Process (Criterion 1.4)",
+    title: "PEO Review & Revision Process (Criterion 1.4)",
+    maxMarks: 5,
     fields: [
       {
         name: "academicYear",
@@ -76,15 +144,38 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "process",
+        name: "reviewFrequency",
+        label: "Review Frequency",
+        type: "text",
+        placeholder: "e.g., Every 3 years",
+        required: true,
+      },
+      {
+        name: "reviewProcess",
         label: "Review Process Description",
         type: "textarea",
+        placeholder: "Describe the process for reviewing and revising PEOs...",
+        required: true,
+      },
+      {
+        name: "stakeholderFeedback",
+        label: "Stakeholder Feedback Mechanism",
+        type: "textarea",
+        placeholder: "How is feedback collected from stakeholders for PEO revision?",
+        required: true,
+      },
+      {
+        name: "lastRevisionDate",
+        label: "Last Revision Date",
+        type: "text",
+        placeholder: "e.g., June 2023",
         required: true,
       },
     ],
   },
   1.5: {
-    title: "PEO Consistency (Criterion 1.5)",
+    title: "PEO Consistency with Graduate Attributes (Criterion 1.5)",
+    maxMarks: 5,
     fields: [
       {
         name: "academicYear",
@@ -94,21 +185,29 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "peoMissionMatrix",
-        label: "PEO-Mission Consistency Matrix",
+        name: "consistencyMatrix",
+        label: "PEO-Graduate Attributes Consistency Matrix",
         type: "textarea",
+        placeholder: "Show how PEOs align with NBA Graduate Attributes...",
         required: true,
       },
       {
-        name: "justification",
-        label: "Justification",
+        name: "evidenceOfConsistency",
+        label: "Evidence of Consistency",
         type: "textarea",
+        placeholder: "Provide evidence demonstrating consistency...",
         required: true,
       },
     ],
   },
-  2.1: {
-    title: "Program Curriculum (Criterion 2.1)",
+
+  // ============================================
+  // CRITERION 2: Program Curriculum and Teaching-Learning Processes
+  // Max Marks: 120 (all INFO fields)
+  // ============================================
+  "2.1.1": {
+    title: "Curriculum Design (Criterion 2.1.1)",
+    maxMarks: 20,
     fields: [
       {
         name: "academicYear",
@@ -118,9 +217,10 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "description",
-        label: "Curriculum Description",
+        name: "curriculumStructure",
+        label: "Curriculum Structure Description",
         type: "textarea",
+        placeholder: "Describe overall curriculum structure...",
         required: true,
       },
       {
@@ -136,22 +236,41 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "scienceCredits",
+        name: "basicScienceCredits",
         label: "Basic Science Credits",
         type: "number",
         required: true,
       },
       {
         name: "engineeringCredits",
-        label: "Engineering Credits",
+        label: "Engineering Science Credits",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "professionalCoreCredits",
+        label: "Professional Core Credits",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "electiveCredits",
+        label: "Elective Credits",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "projectCredits",
+        label: "Project/Internship Credits",
         type: "number",
         required: true,
       },
     ],
     calculations: ["creditDistribution"],
   },
-  2.2: {
-    title: "Teaching-Learning Processes (Criterion 2.2)",
+  "2.1.2": {
+    title: "Syllabus Content (Criterion 2.1.2)",
+    maxMarks: 15,
     fields: [
       {
         name: "academicYear",
@@ -161,15 +280,272 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "description",
-        label: "Teaching Methods Description",
+        name: "syllabusRelevance",
+        label: "Syllabus Relevance to Industry",
         type: "textarea",
+        placeholder: "How does syllabus align with industry requirements?",
+        required: true,
+      },
+      {
+        name: "latestTechnologies",
+        label: "Latest Technologies Covered",
+        type: "textarea",
+        placeholder: "List emerging technologies included in curriculum...",
+        required: true,
+      },
+      {
+        name: "revisionFrequency",
+        label: "Syllabus Revision Frequency",
+        type: "text",
+        placeholder: "e.g., Every 2 years",
         required: true,
       },
     ],
   },
-  3.1: {
-    title: "Course Outcomes (Criterion 3.1)",
+  "2.1.3": {
+    title: "Laboratory Courses (Criterion 2.1.3)",
+    maxMarks: 15,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "labCoursesList",
+        label: "List of Laboratory Courses",
+        type: "textarea",
+        placeholder: "List all lab courses with credits...",
+        required: true,
+      },
+      {
+        name: "totalLabCredits",
+        label: "Total Laboratory Credits",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "labEquipmentAdequacy",
+        label: "Lab Equipment Adequacy",
+        type: "textarea",
+        placeholder: "Describe availability and quality of lab equipment...",
+        required: true,
+      },
+    ],
+  },
+  "2.1.4": {
+    title: "Industry Interaction in Curriculum (Criterion 2.1.4)",
+    maxMarks: 10,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "industryInvolvement",
+        label: "Industry Involvement in Curriculum Design",
+        type: "textarea",
+        placeholder: "Describe how industry experts contribute to curriculum...",
+        required: true,
+      },
+      {
+        name: "industrialVisits",
+        label: "Industrial Visits/Tours",
+        type: "textarea",
+        placeholder: "Number and details of industrial visits...",
+        required: true,
+      },
+      {
+        name: "guestLectures",
+        label: "Guest Lectures from Industry",
+        type: "number",
+        placeholder: "Number of guest lectures per year",
+        required: true,
+      },
+    ],
+  },
+  "2.2.1": {
+    title: "Teaching Methods (Criterion 2.2.1)",
+    maxMarks: 15,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "teachingMethodologies",
+        label: "Teaching Methodologies Used",
+        type: "textarea",
+        placeholder: "Chalk-board, PPT, Active Learning, Flipped Classroom, etc.",
+        required: true,
+      },
+      {
+        name: "ictUsage",
+        label: "ICT Tools Used in Teaching",
+        type: "textarea",
+        placeholder: "LMS, Online resources, Simulation tools, etc.",
+        required: true,
+      },
+      {
+        name: "studentCentricMethods",
+        label: "Student-Centric Learning Methods",
+        type: "textarea",
+        placeholder: "Problem-based learning, Case studies, Mini-projects...",
+        required: true,
+      },
+    ],
+  },
+  "2.2.2": {
+    title: "Continuous Assessment (Criterion 2.2.2)",
+    maxMarks: 15,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "assessmentMethods",
+        label: "Assessment Methods",
+        type: "textarea",
+        placeholder: "Tests, Assignments, Quizzes, Presentations, etc.",
+        required: true,
+      },
+      {
+        name: "frequencyOfAssessment",
+        label: "Frequency of Assessment",
+        type: "text",
+        placeholder: "e.g., 2 CIEs per semester",
+        required: true,
+      },
+      {
+        name: "feedbackMechanism",
+        label: "Feedback Mechanism to Students",
+        type: "textarea",
+        placeholder: "How are assessment results communicated?",
+        required: true,
+      },
+    ],
+  },
+  "2.2.3": {
+    title: "Remedial Measures (Criterion 2.2.3)",
+    maxMarks: 10,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "identificationProcess",
+        label: "Slow Learner Identification Process",
+        type: "textarea",
+        placeholder: "How are slow learners identified?",
+        required: true,
+      },
+      {
+        name: "remedialClasses",
+        label: "Remedial Classes Conducted",
+        type: "textarea",
+        placeholder: "Details of remedial teaching provided...",
+        required: true,
+      },
+      {
+        name: "advancedLearners",
+        label: "Support for Advanced Learners",
+        type: "textarea",
+        placeholder: "Additional challenges for advanced students...",
+        required: true,
+      },
+    ],
+  },
+  "2.2.4": {
+    title: "Project/Internship (Criterion 2.2.4)",
+    maxMarks: 10,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "projectTypes",
+        label: "Types of Projects",
+        type: "textarea",
+        placeholder: "Mini-projects, Major projects, Industry projects...",
+        required: true,
+      },
+      {
+        name: "internshipDetails",
+        label: "Internship Program Details",
+        type: "textarea",
+        placeholder: "Duration, partner companies, student participation...",
+        required: true,
+      },
+      {
+        name: "studentsWithInternship",
+        label: "Students Completing Internship",
+        type: "number",
+        required: true,
+      },
+    ],
+  },
+  "2.2.5": {
+    title: "Self-Learning (Criterion 2.2.5)",
+    maxMarks: 10,
+    fields: [
+      {
+        name: "academicYear",
+        label: "Academic Year",
+        type: "text",
+        placeholder: "2023-24",
+        required: true,
+      },
+      {
+        name: "moocCourses",
+        label: "MOOC/Online Courses",
+        type: "textarea",
+        placeholder: "NPTEL, Coursera, edX courses offered...",
+        required: true,
+      },
+      {
+        name: "selfLearningCredits",
+        label: "Self-Learning Credits",
+        type: "number",
+        placeholder: "Credits allocated for self-learning",
+        required: true,
+      },
+      {
+        name: "certifications",
+        label: "Certifications Encouraged",
+        type: "textarea",
+        placeholder: "Industry certifications students can pursue...",
+        required: true,
+      },
+    ],
+  },
+
+  // ============================================
+  // CRITERION 3: Course Outcomes and Program Outcomes
+  // Max Marks: 175 (all INFO fields)
+  // ============================================
+  "3.1.1": {
+    title: "Course Outcomes Definition (Criterion 3.1.1)",
+    maxMarks: 30,
     fields: [
       {
         name: "academicYear",
@@ -187,8 +563,8 @@ const CRITERIA_CONFIG = {
         required: true,
       },
       {
-        name: "subjectCode",
-        label: "Subject Code",
+        name: "courseCode",
+        label: "Course Code",
         type: "text",
         required: true,
       },

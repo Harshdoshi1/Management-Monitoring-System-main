@@ -58,6 +58,13 @@ const Storage = {
   },
 
   /**
+   * Set user after login from backend
+   */
+  setUser(user) {
+    localStorage.setItem(this.KEYS.CURRENT_USER, JSON.stringify(user));
+  },
+
+  /**
    * Login user
    */
   login(email, password) {
