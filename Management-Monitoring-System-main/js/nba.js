@@ -1518,15 +1518,20 @@ const CRITERIA_CONFIG = {
 };
 
 /**
- * Load criteria content
+ * Load criteria content with improved UI
  */
 function loadCriteria(criteria) {
   const config = CRITERIA_CONFIG[criteria];
 
   if (!config) {
     document.getElementById("criteriaContent").innerHTML = `
-            <div class="bg-red-100 text-red-700 p-4 rounded">
-                Invalid criteria: ${escapeHtml(criteria)}. <a href="dashboard.html?tab=nba" class="underline">Return to NBA page</a>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    Invalid criteria: ${escapeHtml(criteria)}. <a href="dashboard.html?tab=nba" class="underline ml-2 font-semibold">Return to NBA page</a>
+                </div>
             </div>`;
     return;
   }
@@ -1534,19 +1539,45 @@ function loadCriteria(criteria) {
   document.getElementById("criteriaTitle").textContent = config.title;
   document.title = config.title + " - DMS";
 
+  // Calculate max marks display
+  const maxMarksDisplay = config.maxMarks
+    ? `<span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">Max: ${config.maxMarks} marks</span>`
+    : "";
+
   const content = `
+        <!-- Criteria Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-xl mb-6 shadow-lg">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold">${escapeHtml(config.title)}</h2>
+                    <p class="text-blue-100 mt-1">Criterion ${escapeHtml(criteria)}</p>
+                </div>
+                ${maxMarksDisplay}
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Form Section -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-xl font-semibold mb-4 text-gray-800">Enter Data</h2>
-                <form id="criteriaForm" class="space-y-4">
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Enter Data</h2>
+                </div>
+                <form id="criteriaForm">
                     <input type="hidden" name="id" id="editId" value="">
                     ${generateFormFields(config.fields)}
-                    <div class="flex gap-2">
-                        <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold">
+                    <div class="flex gap-3 mt-6 pt-4 border-t">
+                        <button type="submit" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg hover:from-blue-700 hover:to-indigo-700 font-semibold shadow-md transition-all duration-200 flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
                             Save Data
                         </button>
-                        <button type="button" onclick="clearForm()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+                        <button type="button" onclick="clearForm()" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-semibold transition-all duration-200">
                             Clear
                         </button>
                     </div>
@@ -1554,33 +1585,56 @@ function loadCriteria(criteria) {
             </div>
 
             <!-- Calculations Section -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-xl font-semibold mb-4 text-gray-800">Calculations & Results</h2>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Calculations & Results</h2>
+                </div>
                 <div id="calculationResults" class="space-y-4">
-                    <p class="text-gray-500">Enter data and calculations will appear here automatically.</p>
+                    <div class="bg-gray-50 rounded-lg p-4 text-center">
+                        <svg class="w-12 h-12 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                        <p class="text-gray-500">Enter data and calculations will appear here automatically.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Data Table -->
-        <div class="bg-white rounded-lg shadow-md mt-6 overflow-hidden">
-            <div class="p-4 border-b bg-gray-50">
-                <h2 class="text-xl font-semibold text-gray-800">Saved Records</h2>
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 mt-6 overflow-hidden">
+            <div class="p-5 border-b bg-gradient-to-r from-gray-50 to-gray-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Saved Records</h2>
+                </div>
             </div>
             <div class="overflow-x-auto">
-                <table class="nba-table" id="dataTable">
-                    <thead>
+                <table class="w-full" id="dataTable">
+                    <thead class="bg-gray-50">
                         <tr>
                             ${generateTableHeaders(config.fields)}
-                            <th>Actions</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b-2 border-gray-200">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="dataTableBody">
+                    <tbody id="dataTableBody" class="divide-y divide-gray-100">
                     </tbody>
                 </table>
             </div>
-            <div id="noData" class="hidden p-8 text-center text-gray-500">
-                No data saved yet. Add your first entry above.
+            <div id="noData" class="hidden p-12 text-center">
+                <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                </svg>
+                <p class="text-gray-500 text-lg">No data saved yet</p>
+                <p class="text-gray-400 text-sm mt-1">Add your first entry using the form above</p>
             </div>
         </div>
     `;
@@ -1600,22 +1654,24 @@ function loadCriteria(criteria) {
 }
 
 /**
- * Generate form fields HTML
+ * Generate form fields HTML with improved styling
  */
 function generateFormFields(fields) {
   return fields
     .map((field) => {
       let input = "";
+      const baseClass =
+        "w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200";
 
       if (field.type === "textarea") {
         input = `<textarea name="${field.name}" id="${field.name}" 
                         ${field.required ? "required" : ""} 
-                        class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-300" 
+                        class="${baseClass} min-h-[100px] resize-y" 
                         rows="3" placeholder="${field.placeholder || ""}">${field.default || ""}</textarea>`;
       } else if (field.type === "select") {
         input = `<select name="${field.name}" id="${field.name}" 
                         ${field.required ? "required" : ""} 
-                        class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-300">
+                        class="${baseClass} cursor-pointer">
                         ${field.options.map((opt) => `<option value="${opt}">${opt}</option>`).join("")}
                     </select>`;
       } else {
@@ -1624,13 +1680,16 @@ function generateFormFields(fields) {
                         ${field.min !== undefined ? `min="${field.min}"` : ""} 
                         ${field.max !== undefined ? `max="${field.max}"` : ""} 
                         ${field.step ? `step="${field.step}"` : ""} 
-                        class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-300" 
+                        class="${baseClass}" 
                         placeholder="${field.placeholder || ""}">`;
       }
 
       return `
-            <div>
-                <label class="block text-gray-700 text-sm font-bold mb-1">${field.label}</label>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-semibold mb-2" for="${field.name}">
+                    ${field.label}
+                    ${field.required ? '<span class="text-red-500 ml-1">*</span>' : '<span class="text-gray-400 text-xs ml-1">(optional)</span>'}
+                </label>
                 ${input}
             </div>`;
     })
@@ -1638,10 +1697,15 @@ function generateFormFields(fields) {
 }
 
 /**
- * Generate table headers
+ * Generate table headers with improved styling
  */
 function generateTableHeaders(fields) {
-  return fields.map((f) => `<th>${f.label}</th>`).join("");
+  return fields
+    .map(
+      (f) =>
+        `<th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b-2 border-gray-200 bg-gray-50">${f.label}</th>`,
+    )
+    .join("");
 }
 
 /**
@@ -1743,11 +1807,23 @@ async function loadCriteriaData(criteria, config) {
       tbody.innerHTML = result.data
         .map(
           (item) => `
-              <tr>
-                  ${config.fields.map((f) => `<td>${escapeHtml(String(item[f.name] || ""))}</td>`).join("")}
-                  <td>
-                      <button onclick="editRecord('${criteria}', ${item.id})" class="text-blue-600 hover:underline text-sm mr-2">Edit</button>
-                      <button onclick="deleteRecord('${criteria}', ${item.id})" class="text-red-600 hover:underline text-sm">Delete</button>
+              <tr class="hover:bg-gray-50 transition-colors duration-150">
+                  ${config.fields.map((f) => `<td class="px-4 py-3 text-sm text-gray-700">${escapeHtml(String(item[f.name] || "-"))}</td>`).join("")}
+                  <td class="px-4 py-3">
+                      <div class="flex gap-2">
+                          <button onclick="editRecord('${criteria}', ${item.id})" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-100 transition-colors">
+                              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                              </svg>
+                              Edit
+                          </button>
+                          <button onclick="deleteRecord('${criteria}', ${item.id})" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 text-sm font-medium rounded-lg hover:bg-red-100 transition-colors">
+                              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                              </svg>
+                              Delete
+                          </button>
+                      </div>
                   </td>
               </tr>
           `,
@@ -1764,10 +1840,10 @@ async function loadCriteriaData(criteria, config) {
 }
 
 /**
- * Edit record
+ * Edit record - uses data loaded from Supabase
  */
 function editRecord(criteria, id) {
-  const data = Storage.getNBAData(criteria);
+  const data = window.currentCriteriaData || [];
   const record = data.find((item) => item.id === id);
   const config = CRITERIA_CONFIG[criteria];
 
@@ -1785,21 +1861,51 @@ function editRecord(criteria, id) {
       performCalculations(config);
     }
 
-    // Scroll to form
-    document
-      .getElementById("criteriaForm")
-      .scrollIntoView({ behavior: "smooth" });
+    // Scroll to form with visual highlight
+    const form = document.getElementById("criteriaForm");
+    form.scrollIntoView({ behavior: "smooth" });
+    form.classList.add("ring-2", "ring-blue-500", "ring-offset-2");
+    setTimeout(() => {
+      form.classList.remove("ring-2", "ring-blue-500", "ring-offset-2");
+    }, 2000);
+  } else {
+    showMessage("Could not load record for editing", "error");
   }
 }
 
 /**
- * Delete record
+ * Delete record - calls Supabase backend
  */
-function deleteRecord(criteria, id) {
-  if (confirm("Are you sure you want to delete this record?")) {
-    const result = Storage.deleteNBAData(criteria, id);
-    showMessage(result.message, result.success ? "success" : "error");
-    loadCriteriaData(criteria, CRITERIA_CONFIG[criteria]);
+async function deleteRecord(criteria, id) {
+  if (!confirm("Are you sure you want to delete this record?")) {
+    return;
+  }
+
+  try {
+    const response = await fetch("backend/NBA/delete_criteria_data.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        criteria: criteria,
+        id: id,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      showMessage("Record deleted successfully", "success");
+      await loadCriteriaData(criteria, CRITERIA_CONFIG[criteria]);
+    } else {
+      showMessage(
+        "Error deleting record: " + (result.error || result.message),
+        "error",
+      );
+    }
+  } catch (error) {
+    showMessage("Network error: " + error.message, "error");
   }
 }
 
@@ -2127,20 +2233,41 @@ function displayCalculationResults(results) {
 }
 
 /**
- * Show message
+ * Show message with improved styling
  */
 function showMessage(text, type = "success") {
   const messageDiv = document.getElementById("message");
-  messageDiv.className =
-    type === "error"
-      ? "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded mb-4"
-      : "bg-green-100 text-green-700 border border-green-400 px-4 py-3 rounded mb-4";
-  messageDiv.textContent = text;
+
+  let icon = "";
+  let className = "";
+
+  if (type === "error") {
+    className =
+      "bg-red-50 text-red-800 border-l-4 border-red-500 px-4 py-4 rounded-lg mb-4 flex items-center gap-3 shadow-sm";
+    icon = `<svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+            </svg>`;
+  } else if (type === "warning") {
+    className =
+      "bg-yellow-50 text-yellow-800 border-l-4 border-yellow-500 px-4 py-4 rounded-lg mb-4 flex items-center gap-3 shadow-sm";
+    icon = `<svg class="w-5 h-5 text-yellow-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>`;
+  } else {
+    className =
+      "bg-green-50 text-green-800 border-l-4 border-green-500 px-4 py-4 rounded-lg mb-4 flex items-center gap-3 shadow-sm";
+    icon = `<svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>`;
+  }
+
+  messageDiv.className = className;
+  messageDiv.innerHTML = `${icon}<span>${text}</span>`;
   messageDiv.classList.remove("hidden");
 
   setTimeout(() => {
     messageDiv.classList.add("hidden");
-  }, 3000);
+  }, 4000);
 }
 
 /**
@@ -2186,169 +2313,12 @@ async function saveNBADataToSupabase(criteria, data) {
 
 /**
  * Get save endpoint for criteria
+ * All criteria now use the unified save_generic.php endpoint with Supabase REST API
  */
 function getSaveEndpoint(criteria) {
-  // Map criteria to save script endpoints
-  const criteriaMap = {
-    // Criteria 1
-    1.1: "backend/NBA/save_11.php",
-    1.2: "backend/NBA/save_12.php",
-    1.3: "backend/NBA/save_13.php",
-    1.4: "backend/NBA/save_14.php",
-    1.5: "backend/NBA/save_15.php",
-
-    // Criteria 2
-    "2.1.1": "backend/NBA/save_211.php",
-    "2.1.2": "backend/NBA/save_212.php",
-    "2.1.3": "backend/NBA/save_213.php",
-    "2.1.4": "backend/NBA/save_214.php",
-    "2.2.1": "backend/NBA/save_221.php",
-    "2.2.2": "backend/NBA/save_222.php",
-    "2.2.3": "backend/NBA/save_223.php",
-    "2.2.4": "backend/NBA/save_224.php",
-    "2.2.5": "backend/NBA/save_225.php",
-
-    // Criteria 3
-    3.1: "backend/NBA/save_31.php",
-    "3.2.1": "backend/NBA/save_321.php",
-    "3.2.2": "backend/NBA/save_322.php",
-    "3.3.1": "backend/NBA/save_331.php",
-    "3.3.2": "backend/NBA/save_332.php",
-
-    // Criteria 4 (already exist)
-    4.1: "backend/NBA/save_41.php",
-    "4.2.1": "backend/NBA/save_421.php",
-    "4.2.2": "backend/NBA/save_422.php",
-    4.3: "backend/NBA/save_43.php",
-    4.4: "backend/NBA/save_44.php",
-    "4.5.1": "backend/NBA/save_451.php",
-    "4.5.2": "backend/NBA/save_452.php",
-    "4.5.3": "backend/NBA/save_453.php",
-
-    // Criteria 5 (already exist)
-    5.1: "backend/NBA/save_51.php",
-    5.2: "backend/NBA/save_52.php",
-    5.3: "backend/NBA/save_53.php",
-    5.4: "backend/NBA/save_54.php",
-    5.5: "backend/NBA/save_55.php",
-    5.6: "backend/NBA/save_56.php",
-    5.7: "backend/NBA/save_57.php",
-    "5.8.1": "backend/NBA/save_581.php",
-    "5.8.2": "backend/NBA/save_582.php",
-    "5.8.3": "backend/NBA/save_583.php",
-    "5.8.4": "backend/NBA/save_584.php",
-    5.9: "backend/NBA/save_59.php",
-    "5.10": "backend/NBA/save_510.php",
-
-    // Criteria 6 (already exist)
-    6.1: "backend/NBA/save_61.php",
-    6.2: "backend/NBA/save_62.php",
-    6.3: "backend/NBA/save_63.php",
-    6.4: "backend/NBA/save_64.php",
-
-    // Criteria 7 (already exist)
-    7.1: "backend/NBA/save_71.php",
-    7.2: "backend/NBA/save_72.php",
-    7.3: "backend/NBA/save_73.php",
-    7.4: "backend/NBA/save_74.php",
-
-    // Criteria 8
-    8.1: "backend/NBA/save_81_supabase.php",
-    8.2: "backend/NBA/save_82.php",
-    8.3: "backend/NBA/save_83.php",
-    "8.4.1": "backend/NBA/save_841.php",
-    "8.4.2": "backend/NBA/save_842.php",
-    "8.5.1": "backend/NBA/save_851.php",
-    "8.5.2": "backend/NBA/save_852.php",
-
-    // Criteria 9
-    9.1: "backend/NBA/save_91.php",
-    9.2: "backend/NBA/save_92.php",
-    9.3: "backend/NBA/save_93.php",
-    9.4: "backend/NBA/save_94.php",
-    9.5: "backend/NBA/save_95.php",
-    9.6: "backend/NBA/save_96.php",
-    9.7: "backend/NBA/save_97.php",
-
-    // Criteria 10
-    10.1: "backend/NBA/save_101.php",
-  };
-
-  return criteriaMap[criteria] || "backend/NBA/save_generic.php";
+  // Use unified save endpoint with criteria parameter
+  return `backend/NBA/save_generic.php?criteria=${encodeURIComponent(criteria)}`;
 }
 
-/**
- * Delete NBA record
- */
-async function deleteRecord(criteria, id) {
-  if (!confirm("Are you sure you want to delete this record?")) {
-    return;
-  }
-
-  try {
-    const response = await fetch("backend/NBA/delete_criteria_data.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        criteria: criteria,
-        id: id,
-      }),
-    });
-
-    const result = await response.json();
-
-    if (result.success) {
-      showMessage("Record deleted successfully", "success");
-      const config = CRITERIA_CONFIG[criteria];
-      await loadCriteriaData(criteria, config);
-    } else {
-      showMessage("Error deleting record: " + result.error, "error");
-    }
-  } catch (error) {
-    showMessage("Network error: " + error.message, "error");
-  }
-}
-
-/**
- * Edit record - populate form with existing data
- */
-function editRecord(criteria, id) {
-  const data = window.currentCriteriaData;
-  if (!data) return;
-
-  const record = data.find((item) => item.id === id);
-  const config = CRITERIA_CONFIG[criteria];
-
-  if (record && config) {
-    document.getElementById("editId").value = id;
-    config.fields.forEach((field) => {
-      const input = document.getElementById(field.name);
-      if (input) {
-        input.value = record[field.name] || "";
-      }
-    });
-
-    // Trigger calculations
-    if (config.calculations) {
-      performCalculations(config);
-    }
-
-    // Scroll to form
-    document
-      .getElementById("criteriaForm")
-      .scrollIntoView({ behavior: "smooth" });
-  }
-}
-
-/**
- * Clear form
- */
-function clearForm() {
-  const form = document.getElementById("criteriaForm");
-  if (form) {
-    form.reset();
-    document.getElementById("editId").value = "";
-  }
-}
+// Note: deleteRecord, editRecord, and clearForm functions are defined earlier in this file
+// to avoid duplicate function declarations

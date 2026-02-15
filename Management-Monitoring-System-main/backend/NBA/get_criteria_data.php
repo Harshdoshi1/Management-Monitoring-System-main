@@ -1,4 +1,12 @@
 <?php
+/**
+ * Get NBA criteria data from Supabase using REST API
+ */
+
+// Supabase Configuration
+define('SUPABASE_URL', 'https://ijdeeyylabqrsgdebliz.supabase.co');
+define('SUPABASE_ANON_KEY', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqZGVleXlsYWJxcnNnZGVibGl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MTcyNjAsImV4cCI6MjA4NjM5MzI2MH0.UbzkskQuiP92ZEXSnJFibWc-mJvzMEs2L-H9xeQjAQY');
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
@@ -8,7 +16,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-require_once '../supabase.php';
+/**
+ * Convert snake_case to camelCase
+ */
+function snakeToCamel($input) {
+    return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $input))));
+}
+
+/**
+ * Convert all array keys from snake_case to camelCase
+ */
+function convertArrayKeysToCamel($array) {
+    $result = [];
+    foreach ($array as $key => $value) {
+        $newKey = snakeToCamel($key);
+        $result[$newKey] = $value;
+    }
+    return $result;
+}
 
 try {
     // Get query parameters
@@ -20,9 +45,6 @@ try {
     }
     
     // Map criteria to table names
-    // Criteria 1-3, 8-10 use format: nba_criterion_11, nba_criterion_211, etc.
-    // Criteria 4-7 use format: criterion_4_1_enrolment, criterion_5_1_sfr, etc.
-    
     $table_mapping = [
         // Criterion 1
         '1.1' => 'nba_criterion_11',
@@ -114,40 +136,63 @@ try {
     
     $table_name = $table_mapping[$criteria];
     
-    // Build query
-    $sql = "SELECT * FROM $table_name WHERE 1=1";
-    $params = [];
+    // Build Supabase REST API URL
+    $url = SUPABASE_URL . '/rest/v1/' . $table_name . '?order=created_at.desc';
     
     if ($academic_year) {
-        $sql .= " AND academic_year = :academic_year";
-        $params[':academic_year'] = $academic_year;
+        $url .= '&academic_year=eq.' . urlencode($academic_year);
     }
     
-    $sql .= " ORDER BY academic_year DESC, created_at DESC";
+    // Make request to Supabase
+    $headers = [
+        'apikey: ' . SUPABASE_ANON_KEY,
+        'Authorization: Bearer ' . SUPABASE_ANON_KEY,
+        'Content-Type: application/json'
+    ];
     
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     
-    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
+    
+    if ($error) {
+        throw new Exception('cURL error: ' . $error);
+    }
+    
+    if ($httpCode !== 200) {
+        throw new Exception('Supabase error: HTTP ' . $httpCode);
+    }
+    
+    $data = json_decode($response, true);
+    
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception('JSON decode error');
+    }
+    
+    // Convert snake_case keys to camelCase for JavaScript
+    $convertedData = array_map('convertArrayKeysToCamel', $data);
     
     echo json_encode([
         'success' => true,
         'criteria' => $criteria,
         'table' => $table_name,
-        'count' => count($data),
-        'data' => $data
+        'count' => count($convertedData),
+        'data' => $convertedData
     ]);
     
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Database error: ' . $e->getMessage()
-    ]);
 } catch (Exception $e) {
     http_response_code(400);
     echo json_encode([
         'success' => false,
-        'error' => $e->getMessage()
+        'error' => $e->getMessage(),
+        'data' => []
     ]);
 }
+?>
+

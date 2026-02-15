@@ -1,9 +1,11 @@
 <?php
 /**
- * Delete NBA criteria record from Supabase
+ * Delete NBA criteria record from Supabase using REST API
  */
-require_once '../db.php';
-require_once '../helpers.php';
+
+// Supabase Configuration
+define('SUPABASE_URL', 'https://ijdeeyylabqrsgdebliz.supabase.co');
+define('SUPABASE_ANON_KEY', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqZGVleXlsYWJxcnNnZGVibGl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MTcyNjAsImV4cCI6MjA4NjM5MzI2MH0.UbzkskQuiP92ZEXSnJFibWc-mJvzMEs2L-H9xeQjAQY');
 
 // Set JSON response headers
 header('Content-Type: application/json');
@@ -88,32 +90,32 @@ try {
  * Get table name for criteria (same as in get_criteria_data.php)
  */
 function getCriteriaTableName($criteria) {
-    // Map criteria to table names
+    // Map criteria to table names (matching database schema)
     $criteriaMap = [
         // Criteria 1
-        '1.1' => 'nba_criteria_11',
-        '1.2' => 'nba_criteria_12', 
-        '1.3' => 'nba_criteria_13',
-        '1.4' => 'nba_criteria_14',
-        '1.5' => 'nba_criteria_15',
+        '1.1' => 'nba_criterion_11',
+        '1.2' => 'nba_criterion_12', 
+        '1.3' => 'nba_criterion_13',
+        '1.4' => 'nba_criterion_14',
+        '1.5' => 'nba_criterion_15',
         
         // Criteria 2
-        '2.1.1' => 'nba_criteria_211',
-        '2.1.2' => 'nba_criteria_212',
-        '2.1.3' => 'nba_criteria_213',
-        '2.1.4' => 'nba_criteria_214',
-        '2.2.1' => 'nba_criteria_221',
-        '2.2.2' => 'nba_criteria_222',
-        '2.2.3' => 'nba_criteria_223',
-        '2.2.4' => 'nba_criteria_224',
-        '2.2.5' => 'nba_criteria_225',
+        '2.1.1' => 'nba_criterion_211',
+        '2.1.2' => 'nba_criterion_212',
+        '2.1.3' => 'nba_criterion_213',
+        '2.1.4' => 'nba_criterion_214',
+        '2.2.1' => 'nba_criterion_221',
+        '2.2.2' => 'nba_criterion_222',
+        '2.2.3' => 'nba_criterion_223',
+        '2.2.4' => 'nba_criterion_224',
+        '2.2.5' => 'nba_criterion_225',
         
         // Criteria 3
-        '3.1' => 'nba_criteria_31',
-        '3.2.1' => 'nba_criteria_321',
-        '3.2.2' => 'nba_criteria_322',
-        '3.3.1' => 'nba_criteria_331',
-        '3.3.2' => 'nba_criteria_332',
+        '3.1' => 'nba_criterion_31',
+        '3.2.1' => 'nba_criterion_321',
+        '3.2.2' => 'nba_criterion_322',
+        '3.3.1' => 'nba_criterion_331',
+        '3.3.2' => 'nba_criterion_332',
         
         // Criteria 4 (existing)
         '4.1' => 'criterion_4_1_enrolment',
@@ -153,25 +155,25 @@ function getCriteriaTableName($criteria) {
         '7.4' => 'criterion_7_4_student_quality',
         
         // Criteria 8
-        '8.1' => 'nba_criteria_81',
-        '8.2' => 'nba_criteria_82',
-        '8.3' => 'nba_criteria_83',
-        '8.4.1' => 'nba_criteria_841',
-        '8.4.2' => 'nba_criteria_842',
-        '8.5.1' => 'nba_criteria_851',
-        '8.5.2' => 'nba_criteria_852',
+        '8.1' => 'nba_criterion_81',
+        '8.2' => 'nba_criterion_82',
+        '8.3' => 'nba_criterion_83',
+        '8.4.1' => 'nba_criterion_841',
+        '8.4.2' => 'nba_criterion_842',
+        '8.5.1' => 'nba_criterion_851',
+        '8.5.2' => 'nba_criterion_852',
         
         // Criteria 9
-        '9.1' => 'nba_criteria_91',
-        '9.2' => 'nba_criteria_92',
-        '9.3' => 'nba_criteria_93',
-        '9.4' => 'nba_criteria_94',
-        '9.5' => 'nba_criteria_95',
-        '9.6' => 'nba_criteria_96',
-        '9.7' => 'nba_criteria_97',
+        '9.1' => 'nba_criterion_91',
+        '9.2' => 'nba_criterion_92',
+        '9.3' => 'nba_criterion_93',
+        '9.4' => 'nba_criterion_94',
+        '9.5' => 'nba_criterion_95',
+        '9.6' => 'nba_criterion_96',
+        '9.7' => 'nba_criterion_97',
         
         // Criteria 10
-        '10.1' => 'nba_criteria_101'
+        '10.1' => 'nba_criterion_101'
     ];
     
     if (!isset($criteriaMap[$criteria])) {
