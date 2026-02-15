@@ -66,9 +66,9 @@
       </p>
 
       <div class="mt-6 p-4 bg-blue-50 rounded text-sm text-gray-600">
-        <p class="font-semibold mb-2">Demo Credentials:</p>
-        <p>Email: demo@example.com</p>
-        <p>Password: demo123</p>
+        <p class="font-semibold mb-2">Note:</p>
+        <p>Please register an account first if you haven't already.</p>
+        <p>Data is stored securely in Supabase cloud database.</p>
       </div>
     </div>
 
@@ -81,28 +81,37 @@
 
       document
         .getElementById("loginForm")
-        .addEventListener("submit", function (e) {
+        .addEventListener("submit", async function (e) {
           e.preventDefault();
 
           const email = document.getElementById("email").value;
           const password = document.getElementById("password").value;
           const messageDiv = document.getElementById("message");
 
-          const result = Storage.login(email, password);
+          try {
+            // Call Supabase directly via Storage module
+            const result = await Storage.loginWithSupabase(email, password);
 
-          if (result.success) {
-            messageDiv.className =
-              "bg-green-100 text-green-700 border border-green-400 px-4 py-3 rounded mb-4";
-            messageDiv.textContent = result.message;
-            messageDiv.classList.remove("hidden");
+            if (result.success) {
+              messageDiv.className =
+                "bg-green-100 text-green-700 border border-green-400 px-4 py-3 rounded mb-4";
+              messageDiv.textContent = result.message;
+              messageDiv.classList.remove("hidden");
 
-            setTimeout(() => {
-              window.location.href = "dashboard.html";
-            }, 500);
-          } else {
+              setTimeout(() => {
+                window.location.href = "dashboard.html";
+              }, 500);
+            } else {
+              messageDiv.className =
+                "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded mb-4";
+              messageDiv.textContent = result.message;
+              messageDiv.classList.remove("hidden");
+            }
+          } catch (error) {
+            console.error('Login error:', error);
             messageDiv.className =
               "bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded mb-4";
-            messageDiv.textContent = result.message;
+            messageDiv.textContent = "Login failed. Please try again.";
             messageDiv.classList.remove("hidden");
           }
         });
