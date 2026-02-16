@@ -1,32 +1,17 @@
 {
-  "version": 2,
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "buildCommand": "echo 'No build required'",
-  "installCommand": "echo 'No install required'",
   "functions": {
     "api/**/*.php": {
       "runtime": "vercel-php@0.7.1"
     }
   },
   "rewrites": [
-    { "source": "/backend/NBA/:path*", "destination": "/api/NBA/:path*" },
-    { "source": "/backend/:path*", "destination": "/api/:path*" }
-  ],
-  "headers": [
     {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, PUT, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        }
-      ]
+      "source": "/backend/NBA/(.*)",
+      "destination": "/api/NBA/$1"
+    },
+    {
+      "source": "/backend/(.*)",
+      "destination": "/api/$1"
     }
   ]
 }
