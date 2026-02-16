@@ -8,7 +8,13 @@
     <link rel="stylesheet" href="css/styles.css" />
     <style>
       .gradient-bg {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+      }
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0px 1000px white inset;
+        transition: background-color 5000s ease-in-out 0s;
       }
       .success-animation {
         animation: slideIn 0.3s ease-out;
@@ -26,22 +32,34 @@
     </style>
   </head>
   <body class="gradient-bg min-h-screen flex justify-center items-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+    <div
+      class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden"
+    >
       <!-- Header -->
-      <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6 text-center">
-        <div class="bg-white/20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
-          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-          </svg>
-        </div>
-        <h2 class="text-3xl font-bold text-white mb-2">Create Account</h2>
-        <p class="text-white/90">Join the Department Monitoring System</p>
+      <div
+        class="bg-gradient-to-r from-indigo-600 to-blue-600 px-8 py-8 text-center"
+      >
+        <h2 class="text-2xl font-bold text-white mb-1">Create Account</h2>
+        <p class="text-white/90 text-sm">Department Monitoring System</p>
       </div>
 
       <div class="p-8">
-        <a href="index.html" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 text-sm font-medium mb-6 transition">
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        <a
+          href="index.html"
+          class="inline-flex items-center text-indigo-600 hover:text-indigo-800 text-sm font-medium mb-6 transition"
+        >
+          <svg
+            class="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            ></path>
           </svg>
           Back to Home
         </a>
@@ -52,33 +70,41 @@
         <form id="signupForm" class="space-y-5">
           <!-- Full Name -->
           <div>
-            <label class="block text-gray-700 text-sm font-semibold mb-2">Full Name</label>
+            <label class="block text-gray-700 text-sm font-medium mb-2"
+              >Full Name</label
+            >
             <input
               type="text"
               name="name"
               id="name"
               required
-              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition"
+              autocomplete="name"
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
               placeholder="Enter your full name"
             />
           </div>
 
           <!-- Email -->
           <div>
-            <label class="block text-gray-700 text-sm font-semibold mb-2">Email Address</label>
+            <label class="block text-gray-700 text-sm font-medium mb-2"
+              >Email Address</label
+            >
             <input
               type="email"
               name="email"
               id="email"
               required
-              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition"
+              autocomplete="email"
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
               placeholder="Enter your email"
             />
           </div>
 
           <!-- Password -->
           <div>
-            <label class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
+            <label class="block text-gray-700 text-sm font-medium mb-2"
+              >Password</label
+            >
             <div class="relative">
               <input
                 type="password"
@@ -86,7 +112,8 @@
                 id="password"
                 required
                 minlength="6"
-                class="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition"
+                autocomplete="new-password"
+                class="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                 placeholder="Minimum 6 characters"
               />
               <button
@@ -94,9 +121,24 @@
                 id="togglePassword"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
               >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  ></path>
                 </svg>
               </button>
             </div>
@@ -104,12 +146,14 @@
 
           <!-- Role -->
           <div>
-            <label class="block text-gray-700 text-sm font-semibold mb-2">Select Role</label>
+            <label class="block text-gray-700 text-sm font-medium mb-2"
+              >Select Role</label
+            >
             <select
               name="role"
               id="role"
               required
-              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition appearance-none bg-white cursor-pointer"
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition appearance-none bg-white cursor-pointer"
             >
               <option value="">-- Choose your role --</option>
               <option value="faculty">Faculty Member</option>
@@ -121,7 +165,7 @@
           <button
             type="submit"
             id="submitBtn"
-            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition duration-200 font-semibold shadow-md hover:shadow-lg"
           >
             Create Account
           </button>
@@ -131,7 +175,10 @@
         <div class="mt-6 text-center">
           <p class="text-gray-600">
             Already have an account?
-            <a href="login.html" class="text-indigo-600 hover:text-indigo-800 font-semibold transition">
+            <a
+              href="login.html"
+              class="text-indigo-600 hover:text-indigo-800 font-semibold transition"
+            >
               Sign In
             </a>
           </p>
@@ -149,16 +196,18 @@
       // Toggle password visibility
       const togglePassword = document.getElementById("togglePassword");
       const passwordInput = document.getElementById("password");
-      
+
       togglePassword.addEventListener("click", function () {
         const type = passwordInput.type === "password" ? "text" : "password";
         passwordInput.type = type;
-        
+
         // Change icon
         if (type === "password") {
-          this.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>';
+          this.innerHTML =
+            '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>';
         } else {
-          this.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>';
+          this.innerHTML =
+            '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>';
         }
       });
 
@@ -167,9 +216,10 @@
         const messageDiv = document.getElementById("message");
         messageDiv.classList.remove("hidden");
         messageDiv.classList.add("success-animation");
-        
+
         if (type === "success") {
-          messageDiv.className = "bg-green-50 border-2 border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center success-animation";
+          messageDiv.className =
+            "bg-green-50 border-2 border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center success-animation";
           messageDiv.innerHTML = `
             <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -177,7 +227,8 @@
             <span class="font-medium">${text}</span>
           `;
         } else {
-          messageDiv.className = "bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center success-animation";
+          messageDiv.className =
+            "bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center success-animation";
           messageDiv.innerHTML = `
             <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -188,61 +239,77 @@
       }
 
       // Form submission
-      document.getElementById("signupForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
+      document
+        .getElementById("signupForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
 
-        const submitBtn = document.getElementById("submitBtn");
-        const name = document.getElementById("name").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
-        const role = document.getElementById("role").value;
+          const submitBtn = document.getElementById("submitBtn");
+          const name = document.getElementById("name").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value;
+          const role = document.getElementById("role").value;
 
-        // Validation
-        if (!name || !email || !password || !role) {
-          showMessage("Please fill in all fields", "error");
-          return;
-        }
-
-        if (password.length < 6) {
-          showMessage("Password must be at least 6 characters", "error");
-          return;
-        }
-
-        // Disable button
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
-
-        try {
-          const response = await fetch("api/register.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, password, role }),
-          });
-          
-          const result = await response.json();
-
-          if (result.success) {
-            showMessage("✓ Account created successfully! Redirecting to login...", "success");
-            
-            // Reset form
-            document.getElementById("signupForm").reset();
-            
-            // Redirect after 1.5 seconds
-            setTimeout(() => {
-              window.location.href = "login.html";
-            }, 1500);
-          } else {
-            showMessage(result.message || "Registration failed. Please try again.", "error");
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = "Create Account";
+          // Validation
+          if (!name || !email || !password || !role) {
+            showMessage("Please fill in all fields", "error");
+            return;
           }
-        } catch (error) {
-          console.error("Registration error:", error);
-          showMessage("Network error. Please check your connection and try again.", "error");
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = "Create Account";
-        }
-      });
+
+          if (password.length < 6) {
+            showMessage("Password must be at least 6 characters", "error");
+            return;
+          }
+
+          // Disable button
+          submitBtn.disabled = true;
+          const originalText = submitBtn.innerHTML;
+          submitBtn.innerHTML =
+            '<svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+
+          try {
+            console.log("Sending registration request...");
+            const response = await fetch("api/register.php", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name, email, password, role }),
+            });
+
+            console.log("Response status:", response.status);
+            const result = await response.json();
+            console.log("Response data:", result);
+
+            if (result.success) {
+              showMessage(
+                "Account created successfully! Redirecting to login...",
+                "success",
+              );
+
+              // Reset form
+              document.getElementById("signupForm").reset();
+
+              // Redirect after 2 seconds
+              setTimeout(() => {
+                window.location.href = "login.html";
+              }, 2000);
+            } else {
+              showMessage(
+                result.message || "Registration failed. Please try again.",
+                "error",
+              );
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = originalText;
+            }
+          } catch (error) {
+            console.error("Registration error:", error);
+            showMessage(
+              "Network error. Please check your connection and try again.",
+              "error",
+            );
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+          }
+        });
     </script>
   </body>
 </html>

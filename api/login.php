@@ -97,9 +97,9 @@ try {
         exit;
     }
     
-    // Extract role from array
-    $roles = $user['roles'];
-    $primaryRole = is_array($roles) ? $roles[0] : $roles;
+    // Extract role from array - roles is stored as JSON array ["faculty"] or ["hod"]
+    $roles = is_string($user['roles']) ? json_decode($user['roles'], true) : $user['roles'];
+    $primaryRole = is_array($roles) && !empty($roles) ? strtolower($roles[0]) : 'faculty';
     
     echo json_encode([
         'success' => true,
