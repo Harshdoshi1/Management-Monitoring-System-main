@@ -1,13 +1,11 @@
 {
-  "outputDirectory": ".",
+  "version": 2,
   "functions": {
-    "api/*.php": {
-      "runtime": "vercel-php@0.7.1",
-      "maxDuration": 10
-    },
-    "api/NBA/*.php": {
-      "runtime": "vercel-php@0.7.1",
-      "maxDuration": 10
+    "api/**/*.php": {
+      "runtime": "vercel-php@0.7.1"
     }
-  }
+  },
+  "routes": [
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
 }
