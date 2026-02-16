@@ -267,15 +267,28 @@
 
           try {
             console.log("Sending registration request...");
-            const response = await fetch("api/register.php", {
+            console.log("Data:", { name, email, role });
+            
+            const response = await fetch("/api/register.php", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ name, email, password, role }),
             });
 
             console.log("Response status:", response.status);
-            const result = await response.json();
-            console.log("Response data:", result);
+            console.log("Response headers:", response.headers);
+            
+            const responseText = await response.text();
+            console.log("Raw response:", responseText);
+            
+            let result;
+            try {
+              result = JSON.parse(responseText);
+            } catch (parseError) {
+              console.error("JSON parse error:", parseError);
+              throw new Error("Invalid response from server");
+            }
+            console.log("Parsed response data:", result);
 
             if (result.success) {
               showMessage(
