@@ -1,56 +1,12 @@
 {
-  "buildCommand": "echo 'Build complete'",
-  "outputDirectory": ".",
   "functions": {
-    "api/login.php": {
-      "runtime": "vercel-php@0.7.1"
-    },
-    "api/register.php": {
-      "runtime": "vercel-php@0.7.1"
-    },
-    "api/add_student.php": {
-      "runtime": "vercel-php@0.7.1"
-    },
-    "api/add_faculty.php": {
-      "runtime": "vercel-php@0.7.1"
-    },
-    "api/delete.php": {
-      "runtime": "vercel-php@0.7.1"
-    },
-    "api/delete_faculty.php": {
-      "runtime": "vercel-php@0.7.1"
-    },
-    "api/transfer.php": {
-      "runtime": "vercel-php@0.7.1"
-    },
-    "api/transfer_faculty.php": {
-      "runtime": "vercel-php@0.7.1"
-    },
-    "api/upload_file.php": {
-      "runtime": "vercel-php@0.7.1"
-    },
-    "api/upload_faculty_excel.php": {
-      "runtime": "vercel-php@0.7.1"
-    },
-    "api/upload_nba.php": {
-      "runtime": "vercel-php@0.7.1"
-    },
-    "api/nba_save.php": {
-      "runtime": "vercel-php@0.7.1"
+    "api/*.php": {
+      "runtime": "vercel-php@0.7.1",
+      "maxDuration": 10
     },
     "api/NBA/*.php": {
       "runtime": "vercel-php@0.7.1",
       "maxDuration": 10
     }
-  },
-  "rewrites": [
-    {
-      "source": "/backend/NBA/(.*)",
-      "destination": "/api/NBA/$1"
-    },
-    {
-      "source": "/backend/(.*)",
-      "destination": "/api/$1"
-    }
-  ]
+  }
 }
