@@ -128,12 +128,12 @@ try {
     error_log("Password hashed successfully");
     
     // Step 3: Prepare user data for Supabase
+    // roles column is text[] (PostgreSQL array), so send as array directly
     $userData = [
         'name' => $name,
         'email' => $email,
         'password_hash' => $password_hash,
-        'roles' => json_encode([$role]), // Store as JSON array
-        'created_at' => date('c') // ISO 8601 format
+        'roles' => [$role] // Send as array for PostgreSQL text[] column
     ];
     
     error_log("Attempting to insert user: " . json_encode($userData));
