@@ -3,35 +3,40 @@
 ## Changes Made
 
 ### 1. **UI Improvements**
-   - ✅ Removed funky gradients and icons from signup/login pages
-   - ✅ Added professional, minimal design across all pages
-   - ✅ Fixed autofill profile icon issue with CSS
-   - ✅ Consistent color scheme (Indigo/Blue gradient)
-   - ✅ Improved spacing and typography
+
+- ✅ Removed funky gradients and icons from signup/login pages
+- ✅ Added professional, minimal design across all pages
+- ✅ Fixed autofill profile icon issue with CSS
+- ✅ Consistent color scheme (Indigo/Blue gradient)
+- ✅ Improved spacing and typography
 
 ### 2. **Authentication Fixes**
-   - ✅ Registration properly saves to Supabase
-   - ✅ Passwords hashed using PASSWORD_BCRYPT
-   - ✅ Roles stored as lowercase ("faculty" or "hod")
-   - ✅ Proper error handling and user feedback
-   - ✅ Console logging for debugging
+
+- ✅ Registration properly saves to Supabase
+- ✅ Passwords hashed using PASSWORD_BCRYPT
+- ✅ Roles stored as lowercase ("faculty" or "hod")
+- ✅ Proper error handling and user feedback
+- ✅ Console logging for debugging
 
 ### 3. **Registration API (api/register.php)**
-   - Validates all input fields
-   - Checks for duplicate emails
-   - Hashes passwords with PASSWORD_BCRYPT
-   - Stores roles as lowercase JSON array: ["faculty"] or ["hod"]
-   - Returns proper success/error messages
+
+- Validates all input fields
+- Checks for duplicate emails
+- Hashes passwords with PASSWORD_BCRYPT
+- Stores roles as lowercase JSON array: ["faculty"] or ["hod"]
+- Returns proper success/error messages
 
 ### 4. **Login API (api/login.php)**
-   - Retrieves user from Supabase
-   - Verifies hashed password
-   - Extracts role from JSON array
-   - Returns lowercase role in response
+
+- Retrieves user from Supabase
+- Verifies hashed password
+- Extracts role from JSON array
+- Returns lowercase role in response
 
 ## Testing Steps
 
 ### Test Registration:
+
 1. Open `signup.html`
 2. Fill in:
    - Name: Test User
@@ -43,12 +48,14 @@
 5. Check browser console for logs
 
 ### Test Login:
+
 1. Open `login.html`
 2. Enter registered email and password
 3. Click "Sign In"
 4. Should redirect to dashboard
 
 ### Verify in Supabase:
+
 1. Go to Supabase Dashboard
 2. Navigate to Table Editor > users table
 3. Check new user record:
@@ -67,6 +74,7 @@
 ## Deployment to Vercel
 
 After committing these changes:
+
 1. Push to GitHub
 2. Vercel will auto-deploy
 3. Test authentication on live site
@@ -75,6 +83,7 @@ After committing these changes:
 ## Troubleshooting
 
 If registration doesn't work:
+
 1. Check browser console for errors
 2. Check Supabase API keys in register.php
 3. Verify Supabase table has correct columns:
