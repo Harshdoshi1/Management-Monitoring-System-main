@@ -97,9 +97,24 @@ try {
         exit;
     }
     
-    // Extract role from array - roles is stored as JSON array ["faculty"] or ["hod"]
-    $roles = is_string($user['roles']) ? json_decode($user['roles'], true) : $user['roles'];
-    $primaryRole = is_array($roles) && !empty($roles) ? strtolower($roles[0]) : 'faculty';
+    // Extract role from array - roles is stored as PostgreSQL text[] array
+    $roles = $user['roles'];
+    
+    // Handle different role formats: array, JSON string, or plain string
+    if (is_array($roles) && !empty($roles)) {
+        $primaryRole = strtolower($roles[0]);
+    } elseif (is_string($roles)) {
+        // Try to decode if it's JSON string
+        $decoded = json_decode($roles, true);
+        if (is_array($decoded) && !empty($decoded)) {
+            $primaryRole = strtolower($decoded[0]);
+        } else {
+            // Plain string or PostgreSQL array string like "{faculty}"
+            $primaryRole = strtolower(trim($roles, '{}[]"'));
+        }
+    } else {
+        $primaryRole = 'faculty';
+    }
     
     echo json_encode([
         'success' => true,
