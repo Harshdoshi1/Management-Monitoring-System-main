@@ -65,7 +65,7 @@
         <!-- Success/Error Message -->
         <div id="message" class="hidden mb-4"></div>
 
-        <form id="signupForm" class="space-y-5">
+        <form id="signupForm" class="space-y-5" onsubmit="return false;">
           <!-- Full Name -->
           <div>
             <label class="block text-gray-700 text-sm font-medium mb-2"
@@ -187,8 +187,12 @@
     <script src="js/storage.js"></script>
     <script>
       // Check if already logged in
-      if (Storage.isLoggedIn()) {
-        window.location.href = "dashboard.html";
+      try {
+        if (typeof Storage !== "undefined" && Storage.isLoggedIn()) {
+          window.location.href = "dashboard.html";
+        }
+      } catch (e) {
+        console.log("Storage check skipped:", e);
       }
 
       // Toggle password visibility
@@ -268,7 +272,7 @@
           try {
             console.log("Sending registration request...");
             console.log("Data:", { name, email, role });
-            
+
             const response = await fetch("/api/register.php", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -277,10 +281,10 @@
 
             console.log("Response status:", response.status);
             console.log("Response headers:", response.headers);
-            
+
             const responseText = await response.text();
             console.log("Raw response:", responseText);
-            
+
             let result;
             try {
               result = JSON.parse(responseText);
